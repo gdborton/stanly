@@ -2,6 +2,7 @@ var events = require('events');
 var _assign = require('object-assign');
 var eventConstants = require('../constants/events');
 var appDispatcher = require('../dispatcher/app-dispatcher');
+var fileStore = require('./files');
 
 var _frames = [];
 var _selectedFrame = null;
@@ -49,16 +50,20 @@ var handleAddFile = function(file) {
 appDispatcher.register(function(payload) {
   var action = payload.action;
   switch (action.actionType) {
-    case eventConstants.ADD_FRAME:
-      _frames.push(action.data);
-      change();
-      break;
     case eventConstants.ADD_FILE:
       handleAddFile(action.data);
       change();
       break;
     case eventConstants.SELECT_FRAME:
       _selectedFrame = action.data;
+      change();
+      break;
+    case eventConstants.SET_LEFT_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].left = parseInt(action.data) || 0;
+      change();
+      break;
+    case eventConstants.SET_TOP_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].top = parseInt(action.data) || 0;
       change();
       break;
     default:

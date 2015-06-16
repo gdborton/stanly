@@ -52,9 +52,7 @@ var Canvas = React.createClass({
       },
 
       image: {
-        position: 'absolute',
-        top: 0,
-        left: 0
+        position: 'absolute'
       }
     };
     var images = [];
@@ -64,7 +62,8 @@ var Canvas = React.createClass({
           top: this.state.selectedFrame.files[filePath].top,
           left: this.state.selectedFrame.files[filePath].left
         });
-        return <img style={style.image} src={filePath}/>
+        
+        return <img style={imageStyle} src={filePath}/>
       }.bind(this));
     }
 
