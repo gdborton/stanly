@@ -1,0 +1,31 @@
+{
+  "name": "petulant-ninja",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gdborton/petulant-ninja.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gdborton/petulant-ninja/issues"
+  },
+  "homepage": "https://github.com/gdborton/petulant-ninja#readme",
+  "devDependencies": {
+    "electron-prebuilt": "^0.28.1",
+    "events": "^1.0.2",
+    "flux": "^2.0.3",
+    "jsx-loader": "^0.13.2",
+    "node-libs-browser": "^0.5.2",
+    "object-assign": "^3.0.0",
+    "react": "^0.13.3",
+    "react-hot-loader": "^1.2.7",
+    "webpack": "^1.9.11",
+    "webpack-dev-server": "^1.9.0"
+  }
+}
