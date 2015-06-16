@@ -26,14 +26,9 @@ var Files = React.createClass({
   },
 
   render: function() {
-    var styles = {
-      file: {
-        pointer: 'cursor'
-      }
-    };
     var files = this.state.files.map(function(file) {
       var style = {
-        pointer: 'cursor',
+        cursor: 'pointer',
         backgroundColor: this.state.selectedFile === file ? '#29516d' : undefined
       };
 
