@@ -44,7 +44,8 @@ var Canvas = React.createClass({
         overflow: 'hidden',
         height: this.state.canvasHeight,
         width: this.state.canvasWidth,
-        background: 'URL(assets/img/transparent-bg.png)'
+        background: 'URL(assets/img/transparent-bg.png)',
+        margin: '200px auto'
       },
 
       container: {
@@ -62,7 +63,7 @@ var Canvas = React.createClass({
           top: this.state.selectedFrame.files[filePath].top,
           left: this.state.selectedFrame.files[filePath].left
         });
-        
+
         return <img style={imageStyle} src={filePath}/>
       }.bind(this));
     }
@@ -72,20 +73,8 @@ var Canvas = React.createClass({
         <div style={style.canvas}>
           {images}
         </div>
-        <div>
-          Width: <input value={this.state.canvasWidth} onChange={this._handleWidthChange} />
-        Height: <input value={this.state.canvasHeight} onChange={this._handleHeightChange} />
-        </div>
       </div>
     );
-  },
-
-  _handleWidthChange: function(event) {
-    canvasActions.setWidth(event.target.value);
-  },
-
-  _handleHeightChange: function() {
-    canvasActions.setHeight(event.target.value);
   }
 });
 

@@ -2,8 +2,18 @@ var React = require('react');
 var frameStore = require('../stores/frames');
 var fileStore = require('../stores/files');
 var frameActions = require('../actions/frames');
+var globalStyles = require('../global-styles');
 
-var FrameEditor = React.createClass({
+var styles = {
+  container: {
+    backgroundColor: globalStyles.colors.outsidePanelBackground,
+    width: 200,
+    padding: globalStyles.sizes.containerPadding,
+    boxSizing: 'border-box'
+  }
+};
+
+var FrameEditorPanel = React.createClass({
   getInitialState: function() {
     return {
       selectedFrame: frameStore.getSelectedFrame(),
@@ -40,7 +50,7 @@ var FrameEditor = React.createClass({
     }
 
     return (
-      <div>
+      <div style={styles.container}>
         top: <input value={editingObject.top} onChange={this._handleTopChange} />
         left: <input value={editingObject.left} onChange={this._handleLeftChange} />
       </div>
@@ -56,4 +66,4 @@ var FrameEditor = React.createClass({
   }
 });
 
-module.exports = FrameEditor;
+module.exports = FrameEditorPanel;
