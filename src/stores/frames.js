@@ -66,6 +66,22 @@ appDispatcher.register(function(payload) {
       _selectedFrame.files[fileStore.getSelectedFile().path].top = parseInt(action.data) || 0;
       change();
       break;
+    case eventConstants.DECREMENT_TOP_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].top--;
+      change();
+      break;
+    case eventConstants.INCREMENT_TOP_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].top++;
+      change();
+      break;
+    case eventConstants.DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].left--;
+      change();
+      break;
+    case eventConstants.INCREMENT_Left_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].left++;
+      change();
+      break;
     default:
       return true;
   }

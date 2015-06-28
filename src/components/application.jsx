@@ -3,6 +3,8 @@ var CanvasPanel = require('./canvas-panel');
 var FrameEditorPanel = require('./frame-editor-panel');
 var globalStyles = require('../global-styles');
 var LeftPanel = require('./left-panel');
+var keyConstants = require('../constants/keys');
+var frameActions = require('../actions/frames');
 
 var styles= {
   application: {
@@ -11,9 +13,13 @@ var styles= {
     color: globalStyles.colors.textColor,
     display: 'flex'
   }
-}
+};
 
 var Application = React.createClass({
+  componentDidMount: function() {
+    document.body.onkeydown = this._handleKeyUp;
+  },
+
   render: function() {
     return (
       <div style={styles.application}>
@@ -22,6 +28,22 @@ var Application = React.createClass({
         <FrameEditorPanel />
       </div>
     );
+  },
+
+  _handleKeyUp: function(event) {
+    console.log('key pressed', event.which);
+    var focus = document.querySelector(':focus');
+    if (!focus || focus.tagName !== 'INPUT') {
+      if (event.which === keyConstants.UP) {
+        frameActions.decrementTop();
+      } else if (event.which === keyConstants.DOWN) {
+        frameActions.incrementTop();
+      } else if (event.which === keyConstants.LEFT) {
+        frameActions.decrementLeft();
+      } else if (event.which === keyConstants.RIGHT) {
+        frameActions.incrementLeft();
+      }
+    }
   }
 });
 
