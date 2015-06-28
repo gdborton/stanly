@@ -42,7 +42,9 @@ var handleAddFile = function(file) {
     frame.files[file.path] = {
       top: 0,
       left: 0,
-      visible: true
+      rotation: 0,
+      visible: true,
+      filepath: file.path
     }
   });
 };
@@ -60,6 +62,10 @@ appDispatcher.register(function(payload) {
       break;
     case eventConstants.SET_LEFT_FOR_SELECTED_FILE_FRAME:
       _selectedFrame.files[fileStore.getSelectedFile().path].left = parseInt(action.data) || 0;
+      change();
+      break;
+    case eventConstants.SET_ROTATION_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].rotation = parseInt(action.data) || 0;
       change();
       break;
     case eventConstants.SET_TOP_FOR_SELECTED_FILE_FRAME:
@@ -80,6 +86,10 @@ appDispatcher.register(function(payload) {
       break;
     case eventConstants.INCREMENT_Left_FOR_SELECTED_FILE_FRAME:
       _selectedFrame.files[fileStore.getSelectedFile().path].left++;
+      change();
+      break;
+    case eventConstants.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME:
+      _selectedFrame.files[fileStore.getSelectedFile().path].visible = !_selectedFrame.files[fileStore.getSelectedFile().path].visible;
       change();
       break;
     default:

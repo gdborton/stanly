@@ -30,6 +30,13 @@ var frameActions = {
     });
   },
 
+  setRotation: function(rotation) {
+    appDispatcher.handleAction({
+      actionType: events.SET_ROTATION_FOR_SELECTED_FILE_FRAME,
+      data: rotation
+    });
+  },
+
   setTop: function(top) {
     appDispatcher.handleAction({
       actionType: events.SET_TOP_FOR_SELECTED_FILE_FRAME,
@@ -41,6 +48,13 @@ var frameActions = {
     appDispatcher.handleAction({
       actionType: events.SET_LEFT_FOR_SELECTED_FILE_FRAME,
       data: left
+    });
+  },
+
+  toggleFileVisibity: function() {
+    appDispatcher.handleAction({
+      actionType: events.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME,
+      data: null
     });
   }
 };

@@ -53,6 +53,8 @@ var FrameEditorPanel = React.createClass({
       <div style={styles.container}>
         top: <input value={editingObject.top} onChange={this._handleTopChange} />
         left: <input value={editingObject.left} onChange={this._handleLeftChange} />
+        Rotation: <input value={editingObject.rotation} onChange={this._handleRotationChange} />
+        Visible: <input type="checkbox" checked={editingObject.visible} onChange={this._handleToggleVisibility} />
       </div>
     );
   },
@@ -63,6 +65,14 @@ var FrameEditorPanel = React.createClass({
 
   _handleLeftChange: function(event) {
     frameActions.setLeft(event.target.value);
+  },
+
+  _handleRotationChange: function(event) {
+    frameActions.setRotation(event.target.value);
+  },
+
+  _handleToggleVisibility: function(event) {
+    frameActions.toggleFileVisibity();
   }
 });
 
