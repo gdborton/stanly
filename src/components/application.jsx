@@ -1,8 +1,8 @@
 var React = require('react');
-var FilesPanel = require('./files-panel');
 var CanvasPanel = require('./canvas-panel');
 var FrameEditorPanel = require('./frame-editor-panel');
 var globalStyles = require('../global-styles');
+var LeftPanel = require('./left-panel');
 
 var styles= {
   application: {
@@ -17,7 +17,7 @@ var Application = React.createClass({
   render: function() {
     return (
       <div style={styles.application}>
-        <FilesPanel />
+        <LeftPanel />
         <CanvasPanel />
         <FrameEditorPanel />
       </div>

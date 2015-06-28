@@ -3,16 +3,7 @@ var fileStore = require('../stores/files');
 var fileActions = require('../actions/files');
 var globalStyles = require('../global-styles');
 
-var styles = {
-  container: {
-    backgroundColor: globalStyles.colors.outsidePanelBackground,
-    height: '100%',
-    padding: globalStyles.sizes.containerPadding,
-    boxSizing: 'border-box'
-  }
-};
-
-var FilesPanel = React.createClass({
+var Files = React.createClass({
   getInitialState: function() {
     return {
       files: fileStore.getFiles(),
@@ -46,7 +37,7 @@ var FilesPanel = React.createClass({
     }.bind(this));
 
     return (
-      <div style={styles.container}>
+      <div>
         <div>Files</div>
         <input multiple={true} type='file' accept="image/x-png, image/gif, image/jpeg" onChange={this._handleFileChange}/>
         {files}
@@ -68,4 +59,4 @@ var FilesPanel = React.createClass({
   }
 });
 
-module.exports = FilesPanel;
+module.exports = Files;
