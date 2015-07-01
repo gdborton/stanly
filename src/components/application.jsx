@@ -5,6 +5,7 @@ var globalStyles = require('../global-styles');
 var LeftPanel = require('./left-panel');
 var keyConstants = require('../constants/keys');
 var frameActions = require('../actions/frames');
+var fileActions = require('../actions/files');
 
 var styles= {
   application: {
@@ -35,9 +36,17 @@ var Application = React.createClass({
     var focus = document.querySelector(':focus');
     if (!focus || focus.tagName !== 'INPUT') {
       if (event.which === keyConstants.UP) {
-        frameActions.decrementTop();
+        if (event.ctrlKey) {
+          fileActions.moveSelectedFileUp();
+        } else {
+          frameActions.decrementTop();
+        }
       } else if (event.which === keyConstants.DOWN) {
-        frameActions.incrementTop();
+        if (event.ctrlKey) {
+          fileActions.moveSelectedFileDown();
+        } else {
+          frameActions.incrementTop();
+        }
       } else if (event.which === keyConstants.LEFT) {
         frameActions.decrementLeft();
       } else if (event.which === keyConstants.RIGHT) {

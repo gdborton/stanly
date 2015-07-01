@@ -42,6 +42,24 @@ appDispatcher.register(function(payload) {
       _selectedFile = action.data;
       change();
       break;
+    case eventConstants.MOVE_SELECTED_FILE_DOWN:
+      var fileIndex = _files.indexOf(_selectedFile);
+      if (fileIndex !== _files.length - 1) {
+        _files[fileIndex] = _files[fileIndex + 1];
+        _files[fileIndex + 1] = _selectedFile;
+        change();
+      }
+
+      break;
+    case eventConstants.MOVE_SELECTED_FILE_UP:
+      var fileIndex = _files.indexOf(_selectedFile);
+      if (fileIndex !== 0) {
+        _files[fileIndex] = _files[fileIndex - 1];
+        _files[fileIndex - 1] = _selectedFile;
+        change();
+      }
+
+      break;
     default:
       return true;
   }

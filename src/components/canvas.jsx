@@ -3,11 +3,13 @@ var frameStore = require('../stores/frames');
 var canvasActions = require('../actions/canvas');
 var canvasStore = require('../stores/canvas');
 var _assign = require('object-assign');
+var fileStore = require('../stores/files');
 
 var Canvas = React.createClass({
   getInitialState: function() {
     return {
       selectedFrame: frameStore.getSelectedFrame(),
+      files: fileStore.getFiles(),
       canvasHeight: canvasStore.getHeight(),
       canvasWidth: canvasStore.getWidth()
     }
@@ -16,6 +18,12 @@ var Canvas = React.createClass({
   _updateFrameStoreState: function() {
     this.setState({
       selectedFrame: frameStore.getSelectedFrame(),
+    });
+  },
+
+  _updateFileStoreState: function() {
+    this.setState({
+      files: fileStore.getFiles()
     });
   },
 
@@ -29,11 +37,13 @@ var Canvas = React.createClass({
   componentDidMount: function() {
     frameStore.addChangeListener(this._updateFrameStoreState);
     canvasStore.addChangeListener(this._updateCanvasStoreState);
+    fileStore.addChangeListener(this._updateFileStoreState);
   },
 
   componentWillUnmount: function() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
     canvasStore.removeChangeListener(this._updateCanvasStoreState);
+    fileStore.removeChangeListener(this._updateFileStoreState);
   },
 
   render: function() {
@@ -58,16 +68,16 @@ var Canvas = React.createClass({
     };
     var images = [];
     if (this.state.selectedFrame) {
-      images = Object.keys(this.state.selectedFrame.files).map(function(filePath) {
-        var file = this.state.selectedFrame.files[filePath];
+      images = this.state.files.map(function(file) {
+        var fileFrame = this.state.selectedFrame.files[file.path];
         var imageStyle = _assign({}, style.image, {
-          top: file.top,
-          left: file.left,
-          transform: 'rotate(' + file.rotation + 'deg)'
+          top: fileFrame.top,
+          left: fileFrame.left,
+          transform: 'rotate(' + fileFrame.rotation + 'deg)'
         });
 
-        if (file.visible) {
-          return <img style={imageStyle} src={filePath}/>
+        if (fileFrame.visible) {
+          return <img style={imageStyle} src={file.path}/>
         }
         return null;
       }.bind(this));
