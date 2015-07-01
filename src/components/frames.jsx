@@ -39,21 +39,28 @@ var Frames = React.createClass({
         width: 10,
         height: 10,
         backgroundColor: frame === this.state.selectedFrame ? globalStyles.colors.selectedColor : 'white',
-        border: '1px solid #ccc'
+        border: '1px solid #ccc',
+        display: 'inline-block'
       };
       return <div key={index} style={style} onClick={this.handleFrameClick.bind(this, frame)} />;
     }.bind(this));
 
     return (
       <div style={styles.container}>
-        Frames: {this.state.frames.length}
-        {frames}
+        Frames: {this.state.frames.length} <a onClick={this.handleNewFrameClick} >+</a>
+        <div>
+          {frames}
+        </div>
       </div>
     );
   },
 
   handleFrameClick: function(frame) {
     frameActions.selectFrame(frame);
+  },
+
+  handleNewFrameClick: function() {
+    frameActions.addFrame();
   }
 });
 

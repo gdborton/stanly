@@ -49,15 +49,38 @@ var handleAddFile = function(file) {
   });
 };
 
+var handleAddFrame = function() {
+  var newFrame = {
+    duration: 500,
+    files: {}
+  };
+  var lastFrame = _frames[_frames.length - 1];
+  fileStore.getFiles().forEach(function(file) {
+    var lastFileFrame = lastFrame.files[file.path];
+    newFrame.files[file.path] = {
+      top: lastFileFrame.top,
+      left: lastFileFrame.left,
+      rotation: lastFileFrame.rotation,
+      visible: lastFileFrame.visible,
+      filepath: file.path
+    }
+  });
+  _frames.push(newFrame);
+  _selectedFrame = _frames[_frames.length - 1];
+};
+
 appDispatcher.register(function(payload) {
   var action = payload.action;
   if (_selectedFrame && _selectedFrame.files && fileStore.getSelectedFile()) {
     var fileFrame = _selectedFrame.files[fileStore.getSelectedFile().path];
   }
-
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
       handleAddFile(action.data);
+      change();
+      break;
+    case eventConstants.ADD_FRAME:
+      handleAddFrame();
       change();
       break;
     case eventConstants.SELECT_FRAME:

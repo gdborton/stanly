@@ -2,6 +2,13 @@ var appDispatcher = require('../dispatcher/app-dispatcher');
 var events = require('../constants/events');
 
 var frameActions = {
+  addFrame: function() {
+    appDispatcher.handleAction({
+      actionType: events.ADD_FRAME,
+      data: null
+    });
+  },
+
   decrementLeft: function() {
     appDispatcher.handleAction({
       actionType: events.DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME,
