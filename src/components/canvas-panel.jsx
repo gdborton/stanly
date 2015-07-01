@@ -2,6 +2,7 @@ var React = require('react');
 var globalStyles = require('../global-styles');
 var Canvas = require('./canvas');
 var CanvasSettings = require('./canvas-settings');
+var Frames = require('./frames');
 
 var borderStyle = '1px solid #181a1f';
 var styles = {
@@ -14,16 +15,18 @@ var styles = {
 
   canvasContainer: {
     backgroundColor: globalStyles.colors.insidePanelBackground,
-    borderLeft: borderStyle,
-    borderRight: borderStyle,
+    border: borderStyle,
     flex: 1,
     overflow: 'auto'
   },
 
   canvasSettingsContainer: {
     backgroundColor: globalStyles.colors.outsidePanelBackground,
-    borderTop: borderStyle,
     padding: globalStyles.sizes.containerPadding
+  },
+
+  framesContainer: {
+
   }
 };
 
@@ -31,6 +34,9 @@ var CanvasPanel = React.createClass({
   render: function() {
     return (
       <div style={styles.container}>
+        <div style={styles.framesContainer}>
+          <Frames />
+        </div>
         <div style={styles.canvasContainer}>
           <Canvas />
         </div>

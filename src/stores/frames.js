@@ -17,7 +17,7 @@ var frameStore = _assign({}, events.prototype, {
   },
 
   getFrames: function() {
-    return _Frames;
+    return _frames;
   },
 
   getSelectedFrame: function() {

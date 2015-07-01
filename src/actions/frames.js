@@ -44,6 +44,13 @@ var frameActions = {
     });
   },
 
+  selectFrame: function(frame) {
+    appDispatcher.handleAction({
+      actionType: events.SELECT_FRAME,
+      data: frame
+    });
+  },
+
   setRotation: function(rotation) {
     appDispatcher.handleAction({
       actionType: events.SET_ROTATION_FOR_SELECTED_FILE_FRAME,

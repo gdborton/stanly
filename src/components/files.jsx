@@ -31,7 +31,7 @@ var Files = React.createClass({
     var files = this.state.files.map(function(file) {
       var style = {
         cursor: 'pointer',
-        backgroundColor: this.state.selectedFile === file ? '#29516d' : undefined
+        backgroundColor: this.state.selectedFile === file ? globalStyles.colors.selectedColor : undefined
       };
 
       return <div style={style} onClick={this._handleSelectFile.bind(this, file)}>{file.name}</div>

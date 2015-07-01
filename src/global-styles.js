@@ -2,7 +2,8 @@ module.exports = {
   colors: {
     outsidePanelBackground: '#21252b',
     insidePanelBackground: '#282c34',
-    textColor: '#d7dae0'
+    textColor: '#d7dae0',
+    selectedColor: '#29516d'
   },
 
   sizes: {
