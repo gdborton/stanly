@@ -35,6 +35,7 @@ var Application = React.createClass({
     console.log('key pressed', event.which);
     var focus = document.querySelector(':focus');
     if (!focus || focus.tagName !== 'INPUT') {
+      event.preventDefault();
       if (event.which === keyConstants.UP) {
         if (event.ctrlKey) {
           fileActions.moveSelectedFileUp();
@@ -53,10 +54,8 @@ var Application = React.createClass({
         frameActions.incrementLeft();
       } else if (event.which === keyConstants.PAGE_UP) {
         frameActions.rotateLeft();
-        event.preventDefault();
       } else if (event.which === keyConstants.PAGE_DOWN) {
         frameActions.rotateRight();
-        event.preventDefault();
       }
     }
   }
