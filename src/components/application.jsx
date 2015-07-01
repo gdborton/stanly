@@ -33,30 +33,24 @@ var Application = React.createClass({
 
   _handleKeyUp: function(event) {
     console.log('key pressed', event.which);
+    var keyHandlers = {};
+    keyHandlers[keyConstants.UP] = function(event) {
+      event.ctrlKey ? fileActions.moveSelectedFileUp() : frameActions.decrementTop();
+    };
+
+    keyHandlers[keyConstants.DOWN] = function() {
+      event.ctrlKey ? fileActions.moveSelectedFileDown() : frameActions.incrementTop();
+    };
+
+    keyHandlers[keyConstants.LEFT] = frameActions.decrementLeft;
+    keyHandlers[keyConstants.RIGHT] = frameActions.incrementLeft;
+    keyHandlers[keyConstants.PAGE_UP] = frameActions.rotateLeft;
+    keyHandlers[keyConstants.PAGE_DOWN] = frameActions.rotateRight;
+
     var focus = document.querySelector(':focus');
-    if (!focus || focus.tagName !== 'INPUT') {
+    if ((!focus || focus.tagName !== 'INPUT') && keyHandlers[event.which]) {
       event.preventDefault();
-      if (event.which === keyConstants.UP) {
-        if (event.ctrlKey) {
-          fileActions.moveSelectedFileUp();
-        } else {
-          frameActions.decrementTop();
-        }
-      } else if (event.which === keyConstants.DOWN) {
-        if (event.ctrlKey) {
-          fileActions.moveSelectedFileDown();
-        } else {
-          frameActions.incrementTop();
-        }
-      } else if (event.which === keyConstants.LEFT) {
-        frameActions.decrementLeft();
-      } else if (event.which === keyConstants.RIGHT) {
-        frameActions.incrementLeft();
-      } else if (event.which === keyConstants.PAGE_UP) {
-        frameActions.rotateLeft();
-      } else if (event.which === keyConstants.PAGE_DOWN) {
-        frameActions.rotateRight();
-      }
+      keyHandlers[event.which](event);
     }
   }
 });

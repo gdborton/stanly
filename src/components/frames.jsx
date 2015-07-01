@@ -45,9 +45,15 @@ var Frames = React.createClass({
       return <div key={index} style={style} onClick={this.handleFrameClick.bind(this, frame)} />;
     }.bind(this));
 
+    var frameDuration = 0;
+    this.state.frames.forEach(function(frame) {
+      frameDuration += frame.duration;
+    });
+    frameDuration = frameDuration / 1000;
+
     return (
       <div style={styles.container}>
-        Frames: {this.state.frames.length} <a onClick={this.handleNewFrameClick} >+</a>
+        Frames: {this.state.frames.length} AnimationDuration: {frameDuration}s <a onClick={this.handleNewFrameClick} >+</a>
         <div>
           {frames}
         </div>
