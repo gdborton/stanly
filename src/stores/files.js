@@ -32,6 +32,9 @@ appDispatcher.register(function(payload) {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
+      if (!_selectedFile) {
+        _selectedFile = action.data;
+      }
       _files.push(action.data);
       change();
       break;
