@@ -51,6 +51,10 @@ var handleAddFile = function(file) {
 
 appDispatcher.register(function(payload) {
   var action = payload.action;
+  if (_selectedFrame && _selectedFrame.files && fileStore.getSelectedFile()) {
+    var fileFrame = _selectedFrame.files[fileStore.getSelectedFile().path];
+  }
+
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
       handleAddFile(action.data);
@@ -61,35 +65,43 @@ appDispatcher.register(function(payload) {
       change();
       break;
     case eventConstants.SET_LEFT_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].left = parseInt(action.data) || 0;
+      fileFrame.left = parseInt(action.data) || 0;
       change();
       break;
     case eventConstants.SET_ROTATION_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].rotation = parseInt(action.data) || 0;
+      fileFrame.rotation = parseInt(action.data) || 0;
       change();
       break;
     case eventConstants.SET_TOP_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].top = parseInt(action.data) || 0;
+      fileFrame.top = parseInt(action.data) || 0;
       change();
       break;
     case eventConstants.DECREMENT_TOP_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].top--;
+      fileFrame.top--;
       change();
       break;
     case eventConstants.INCREMENT_TOP_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].top++;
+      fileFrame.top++;
       change();
       break;
     case eventConstants.DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].left--;
+      fileFrame.left--;
       change();
       break;
     case eventConstants.INCREMENT_Left_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].left++;
+      fileFrame.left++;
+      change();
+      break;
+    case eventConstants.ROTATE_LEFT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.rotation--;
+      change();
+      break;
+    case eventConstants.ROTATE_RIGHT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.rotation++;
       change();
       break;
     case eventConstants.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME:
-      _selectedFrame.files[fileStore.getSelectedFile().path].visible = !_selectedFrame.files[fileStore.getSelectedFile().path].visible;
+      fileFrame.visible = !fileFrame.visible;
       change();
       break;
     default:

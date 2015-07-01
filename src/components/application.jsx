@@ -42,6 +42,12 @@ var Application = React.createClass({
         frameActions.decrementLeft();
       } else if (event.which === keyConstants.RIGHT) {
         frameActions.incrementLeft();
+      } else if (event.which === keyConstants.PAGE_UP) {
+        frameActions.rotateLeft();
+        event.preventDefault();
+      } else if (event.which === keyConstants.PAGE_DOWN) {
+        frameActions.rotateRight();
+        event.preventDefault();
       }
     }
   }

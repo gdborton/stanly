@@ -30,6 +30,20 @@ var frameActions = {
     });
   },
 
+  rotateLeft: function() {
+    appDispatcher.handleAction({
+      actionType: events.ROTATE_LEFT_FOR_SELECTED_FILE_FRAME,
+      data: null
+    });
+  },
+
+  rotateRight: function() {
+    appDispatcher.handleAction({
+      actionType: events.ROTATE_RIGHT_FOR_SELECTED_FILE_FRAME,
+      data: null
+    });
+  },
+
   setRotation: function(rotation) {
     appDispatcher.handleAction({
       actionType: events.SET_ROTATION_FOR_SELECTED_FILE_FRAME,
