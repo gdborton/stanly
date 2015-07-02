@@ -6,6 +6,8 @@ var fileStore = require('./files');
 
 var _frames = [];
 var _selectedFrame = null;
+var _isPlaying = false;
+var _frameTimer = false;
 
 var frameStore = _assign({}, events.prototype, {
   addChangeListener: function(callback) {
@@ -22,6 +24,10 @@ var frameStore = _assign({}, events.prototype, {
 
   getSelectedFrame: function() {
     return _selectedFrame;
+  },
+
+  getIsPlaying: function() {
+    return _isPlaying;
   }
 });
 
@@ -67,6 +73,28 @@ var handleAddFrame = function() {
   });
   _frames.push(newFrame);
   _selectedFrame = _frames[_frames.length - 1];
+};
+
+var togglePlaying = function() {
+  _isPlaying = !_isPlaying;
+  if (_isPlaying) {
+    setupTimer();
+  } else {
+    clearInterval(_frameTimer);
+  }
+};
+
+var setupTimer = function() {
+  _frameTimer = setTimeout(function() {
+    var selectedFrameIndex = _frames.indexOf(_selectedFrame);
+    if (selectedFrameIndex === _frames.length - 1) {
+      _selectedFrame = _frames[0];
+    } else {
+      _selectedFrame = _frames[selectedFrameIndex + 1];
+    }
+    change();
+    setupTimer();
+  }, _selectedFrame.duration);
 };
 
 appDispatcher.register(function(payload) {
@@ -125,6 +153,10 @@ appDispatcher.register(function(payload) {
       break;
     case eventConstants.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME:
       fileFrame.visible = !fileFrame.visible;
+      change();
+      break;
+    case eventConstants.TOGGLE_PLAYING:
+      togglePlaying();
       change();
       break;
     default:

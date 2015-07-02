@@ -84,6 +84,13 @@ var frameActions = {
       actionType: events.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME,
       data: null
     });
+  },
+
+  togglePlaying: function() {
+    appDispatcher.handleAction({
+      actionType: events.TOGGLE_PLAYING,
+      data: null
+    });
   }
 };
 
