@@ -6,7 +6,7 @@ var appDispatcher = require('../dispatcher/app-dispatcher');
 var _animations = ['Base'];
 var _selectedAnimation = _animations[0];
 
-var canvasStore = _assign({}, events.prototype, {
+var animationStore = _assign({}, events.prototype, {
   addChangeListener: function(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
@@ -27,9 +27,17 @@ var canvasStore = _assign({}, events.prototype, {
 appDispatcher.register(function(payload) {
   var action = payload.action;
   switch (action.actionType) {
+    case eventConstants.ADD_ANIMATION:
+      _animations.push('Untitled' + _animations.length);
+      animationStore.emit(eventConstants.CHANGE);
+      break;
+    case eventConstants.SELECT_ANIMATION:
+      _selectedAnimation = action.data;
+      animationStore.emit(eventConstants.CHANGE);
+      break;
     default:
       return true;
   }
 });
 
-module.exports = canvasStore;
+module.exports = animationStore;

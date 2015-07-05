@@ -1,5 +1,6 @@
 var React = require('react');
 var animationStore = require('../stores/animations');
+var animationActions = require('../actions/animations');
 var _assign = require('object-assign');
 
 var Animations = React.createClass({
@@ -12,7 +13,7 @@ var Animations = React.createClass({
 
   _updateAnimationStoreState: function() {
     this.setState({
-      animations: animations.getAnimations(),
+      animations: animationStore.getAnimations(),
       selectedAnimation: animationStore.getSelectedAnimation()
     });
   },
@@ -30,15 +31,23 @@ var Animations = React.createClass({
       var style = {
         backgroundColor: animation === this.state.selectedAnimation ? '#29516d' : undefined
       };
-      return <div style={style}>{animation}</div>;
+      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)}>{animation}</div>;
     }.bind(this));
     var style = _assign({}, this.props.style);
     return (
       <div style={style}>
-        <div>Animations</div>
+        <div>Animations <a onClick={this._handleAddAnimation}>+</a></div>
         {animations}
       </div>
     );
+  },
+
+  _handleAddAnimation: function() {
+    animationActions.addAnimation();
+  },
+
+  _handleSelectAnimation: function(animation) {
+    animationActions.selectAnimation(animation);
   }
 });
 
