@@ -58,6 +58,13 @@ var frameActions = {
     });
   },
 
+  setDuration: function(duration) {
+    appDispatcher.handleAction({
+      actionType: events.SET_DURATION_FOR_SELECTED_FRAME,
+      data: duration
+    });
+  },
+
   setRotation: function(rotation) {
     appDispatcher.handleAction({
       actionType: events.SET_ROTATION_FOR_SELECTED_FILE_FRAME,

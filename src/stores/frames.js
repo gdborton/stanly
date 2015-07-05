@@ -151,6 +151,10 @@ appDispatcher.register(function(payload) {
       fileFrame.rotation++;
       change();
       break;
+    case eventConstants.SET_DURATION_FOR_SELECTED_FRAME:
+      _selectedFrame.duration = action.data;
+      change();
+      break;
     case eventConstants.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME:
       fileFrame.visible = !fileFrame.visible;
       change();

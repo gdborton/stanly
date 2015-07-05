@@ -51,10 +51,15 @@ var FrameEditorPanel = React.createClass({
 
     return (
       <div style={styles.container}>
+        <div>{this.state.selectedFile ? this.state.selectedFile.name + '\'s' : ''} settings</div>
         top: <input value={editingObject.top} onChange={this._handleTopChange} />
         left: <input value={editingObject.left} onChange={this._handleLeftChange} />
         Rotation: <input value={editingObject.rotation} onChange={this._handleRotationChange} />
         Visible: <input type="checkbox" checked={editingObject.visible} onChange={this._handleToggleVisibility} />
+      <div>
+        Frame Settings
+        Duration: <input value={this.state.selectedFrame ? this.state.selectedFrame.duration : 0} onChange={this._handleDurationChange} />
+      </div>
       </div>
     );
   },
@@ -73,6 +78,10 @@ var FrameEditorPanel = React.createClass({
 
   _handleToggleVisibility: function(event) {
     frameActions.toggleFileVisibity();
+  },
+
+  _handleDurationChange: function(event) {
+    frameActions.setDuration(event.target.value);
   }
 });
 
