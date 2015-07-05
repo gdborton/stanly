@@ -49,14 +49,14 @@ var Frames = React.createClass({
 
     var frameDuration = 0;
     this.state.frames.forEach(function(frame) {
-      frameDuration += frame.duration;
+      frameDuration += parseInt(frame.duration);
     });
     frameDuration = frameDuration / 1000;
 
     return (
       <div style={styles.container}>
         Frames: {this.state.frames.length} Animation Duration: {frameDuration}s <a onClick={this.handleNewFrameClick} >+</a> <a onClick={this.handleTogglePlayClick}>{this.state.isPlaying ? 'PAUSE' : 'PLAY'}</a>
-        <div>
+      <div style={{marginTop: 50}}>
           {frames}
         </div>
       </div>
