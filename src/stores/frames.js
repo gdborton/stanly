@@ -3,6 +3,7 @@ var _assign = require('object-assign');
 var eventConstants = require('../constants/events');
 var appDispatcher = require('../dispatcher/app-dispatcher');
 var fileStore = require('./files');
+var animationStore = require('./animations');
 
 var _frames = [];
 var _selectedFrame = null;
@@ -22,6 +23,12 @@ var frameStore = _assign({}, events.prototype, {
     return _frames;
   },
 
+  getFramesForSelectedAnimation: function() {
+    return _frames.filter(function(frame) {
+      return frame.animation === animationStore.getSelectedAnimation();
+    });
+  },
+
   getSelectedFrame: function() {
     return _selectedFrame;
   },
@@ -39,7 +46,8 @@ var handleAddFile = function(file) {
   if (!_frames.length) {
     _frames.push({
       duration: 500,
-      files: {}
+      files: {},
+      animation: animationStore.getSelectedAnimation()
     });
     _selectedFrame = _frames[0];
   }
@@ -58,7 +66,8 @@ var handleAddFile = function(file) {
 var handleAddFrame = function() {
   var newFrame = {
     duration: 500,
-    files: {}
+    files: {},
+    animation: animationStore.getSelectedAnimation()
   };
   var lastFrame = _frames[_frames.length - 1];
   fileStore.getFiles().forEach(function(file) {
@@ -85,12 +94,14 @@ var togglePlaying = function() {
 };
 
 var setupTimer = function() {
+  var frames = frameStore.getFramesForSelectedAnimation();
+
   _frameTimer = setTimeout(function() {
-    var selectedFrameIndex = _frames.indexOf(_selectedFrame);
-    if (selectedFrameIndex === _frames.length - 1) {
-      _selectedFrame = _frames[0];
+    var selectedFrameIndex = frames.indexOf(_selectedFrame);
+    if (selectedFrameIndex === frames.length - 1) {
+      _selectedFrame = frames[0];
     } else {
-      _selectedFrame = _frames[selectedFrameIndex + 1];
+      _selectedFrame = frames[selectedFrameIndex + 1];
     }
     change();
     setupTimer();
@@ -161,6 +172,10 @@ appDispatcher.register(function(payload) {
       break;
     case eventConstants.TOGGLE_PLAYING:
       togglePlaying();
+      change();
+      break;
+    case eventConstants.SELECT_ANIMATION:
+      _selectedFrame = frameStore.getFramesForSelectedAnimation()[0];
       change();
       break;
     default:

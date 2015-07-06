@@ -13,7 +13,7 @@ var styles = {
 var Frames = React.createClass({
   getInitialState: function() {
     return {
-      frames: frameStore.getFrames(),
+      frames: frameStore.getFramesForSelectedAnimation(),
       isPlaying: frameStore.getIsPlaying(),
       selectedFrame: frameStore.getSelectedFrame()
     };
@@ -21,7 +21,7 @@ var Frames = React.createClass({
 
   _updateFrameStoreState: function() {
     this.setState({
-      frames: frameStore.getFrames(),
+      frames: frameStore.getFramesForSelectedAnimation(),
       isPlaying: frameStore.getIsPlaying(),
       selectedFrame: frameStore.getSelectedFrame()
     });
