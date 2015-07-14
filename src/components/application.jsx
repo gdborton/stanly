@@ -6,8 +6,9 @@ var LeftPanel = require('./left-panel');
 var keyConstants = require('../constants/keys');
 var frameActions = require('../actions/frames');
 var fileActions = require('../actions/files');
+require('../utils/export-handler');
 
-var styles= {
+var styles = {
   application: {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
