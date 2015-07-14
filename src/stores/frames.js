@@ -80,6 +80,7 @@ var handleAddFrame = function() {
       filepath: file.path
     }
   });
+
   _frames.push(newFrame);
   _selectedFrame = _frames[_frames.length - 1];
 };
@@ -103,6 +104,7 @@ var setupTimer = function() {
     } else {
       _selectedFrame = frames[selectedFrameIndex + 1];
     }
+
     change();
     setupTimer();
   }, _selectedFrame.duration);
@@ -113,6 +115,7 @@ appDispatcher.register(function(payload) {
   if (_selectedFrame && _selectedFrame.files && fileStore.getSelectedFile()) {
     var fileFrame = _selectedFrame.files[fileStore.getSelectedFile().path];
   }
+
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
       handleAddFile(action.data);
@@ -150,7 +153,7 @@ appDispatcher.register(function(payload) {
       fileFrame.left--;
       change();
       break;
-    case eventConstants.INCREMENT_Left_FOR_SELECTED_FILE_FRAME:
+    case eventConstants.INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
       fileFrame.left++;
       change();
       break;

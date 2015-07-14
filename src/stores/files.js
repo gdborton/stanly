@@ -35,6 +35,7 @@ appDispatcher.register(function(payload) {
       if (!_selectedFile) {
         _selectedFile = action.data;
       }
+
       _files.push(action.data);
       change();
       break;
