@@ -11,5 +11,8 @@
   </head>
   <body>
   </body>
-  <script type="text/javascript" src="http://localhost:3001/application.bundle.js"></script>
+  <script>
+    require('babel/register');
+    require('./components/application.jsx');
+  </script>
 </html>
