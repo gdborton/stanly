@@ -32,7 +32,7 @@ var exportHandler = {
 
       exportObject.animations[animation] = animationFrames.map(animation => {
         var returnObj = {
-          duration: animation.duraction,
+          duration: animation.duration,
           files: {}
         };
 
@@ -82,7 +82,6 @@ var exportHandler = {
             frames.forEach(frame => {
               frameActions.addFrame();
             });
-
           });
 
         } else {
