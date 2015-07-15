@@ -38,17 +38,16 @@ var exportHandler = {
 
         Object.keys(animation.files).forEach(filePath => {
           var animationFileFrame = animation.files[filePath];
-          if (animationFileFrame.visible) {
-            var fileIndex = exportObject.files.indexOf(exportObject.files.filter(file => {
-              return file === filePath.split('/').pop();
-            })[0]);
+          var fileIndex = exportObject.files.indexOf(exportObject.files.filter(file => {
+            return file === filePath.split('/').pop();
+          })[0]);
 
-            returnObj.files[fileIndex] = {
-              top: animationFileFrame.top,
-              left: animationFileFrame.left,
-              rotation: animationFileFrame.rotation
-            };
-          }
+          returnObj.files[fileIndex] = {
+            top: animationFileFrame.top,
+            left: animationFileFrame.left,
+            rotation: animationFileFrame.rotation,
+            visible: animationFileFrame.visible
+          };
         });
 
         return returnObj;
@@ -84,6 +83,14 @@ var exportHandler = {
               if (frame.duration) {
                 frameActions.setDuration(frame.duration);
               }
+
+              Object.keys(frame.files).forEach(fileIndex => {
+                var fileName = importedData.files[parseInt(fileIndex)];
+                var fileSettings = frame.files[fileIndex];
+                fileActions.selectFileByName(fileName);
+
+              });
+
             });
           });
 
