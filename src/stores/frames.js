@@ -70,6 +70,7 @@ var handleAddFrame = function() {
     animation: animationStore.getSelectedAnimation()
   };
   var lastFrame = _frames[_frames.length - 1];
+
   fileStore.getFiles().forEach(function(file) {
     var lastFileFrame = lastFrame.files[file.path];
     newFrame.files[file.path] = {

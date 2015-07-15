@@ -7,6 +7,7 @@ var debounce = require('debounce');
 var fileActions = require('../actions/files');
 var canvasActions = require('../actions/canvas');
 var animationActions = require('../actions/animations');
+var frameActions = require('../actions/frames');
 
 var exportableStores = [frameStore, fileStore, canvasStore, animationStore];
 var fs = require('fs');
@@ -74,6 +75,16 @@ var exportHandler = {
           importedData.files.forEach(file => {
             fileActions.addFile(file, process.cwd() + '/' + file);
           });
+
+          Object.keys(importedData.animations).forEach(animationName => {
+            animationActions.addAnimation(animationName);
+            var frames = importedData.animations[animationName];
+            frames.forEach(frame => {
+              frameActions.addFrame();
+            });
+
+          });
+
         } else {
           animationActions.addAnimation('Base');
         }
