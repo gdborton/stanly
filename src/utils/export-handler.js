@@ -88,7 +88,10 @@ var exportHandler = {
                 var fileName = importedData.files[parseInt(fileIndex)];
                 var fileSettings = frame.files[fileIndex];
                 fileActions.selectFileByName(fileName);
-
+                frameActions.setRotation(fileSettings.rotation);
+                frameActions.setTop(fileSettings.top);
+                frameActions.setLeft(fileSettings.left);
+                frameActions.setVisible(fileSettings.visible);
               });
 
             });
