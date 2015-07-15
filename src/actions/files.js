@@ -19,6 +19,13 @@ var fileActions = {
     });
   },
 
+  selectFileByName: function(fileName) {
+    appDispatcher.handleAction({
+      actionType: events.SELECT_FILE_BY_NAME,
+      data: fileName
+    });
+  },
+
   moveSelectedFileUp: function() {
     appDispatcher.handleAction({
       actionType: events.MOVE_SELECTED_FILE_UP,

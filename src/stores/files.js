@@ -50,6 +50,17 @@ appDispatcher.register(function(payload) {
       _selectedFile = action.data;
       change();
       break;
+    case eventConstants.SELECT_FILE_BY_NAME:
+      var matchingFile = _files.filter(file => {
+        return file.name === action.data;
+      })[0];
+
+      if (matchingFile) {
+        _selectedFile = matchingFile;
+        change();
+      }
+
+      break;
     case eventConstants.MOVE_SELECTED_FILE_DOWN:
       var fileIndex = _files.indexOf(_selectedFile);
       if (fileIndex !== _files.length - 1) {
