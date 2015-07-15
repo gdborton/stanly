@@ -2,10 +2,10 @@ var appDispatcher = require('../dispatcher/app-dispatcher');
 var events = require('../constants/events');
 
 var animationActions = {
-  addAnimation: function() {
+  addAnimation: function(animationName) {
     appDispatcher.handleAction({
       actionType: events.ADD_ANIMATION,
-      data: null
+      data: animationName
     });
   },
 

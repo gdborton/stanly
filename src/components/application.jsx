@@ -6,7 +6,9 @@ var LeftPanel = require('./left-panel');
 var keyConstants = require('../constants/keys');
 var frameActions = require('../actions/frames');
 var fileActions = require('../actions/files');
-require('../utils/export-handler');
+var exportHandler = require('../utils/export-handler');
+
+exportHandler.attemptImport();
 
 var styles = {
   application: {

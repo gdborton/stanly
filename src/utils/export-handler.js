@@ -2,34 +2,18 @@ var frameStore = require('../stores/frames');
 var fileStore = require('../stores/files');
 var canvasStore = require('../stores/canvas');
 var animationStore = require('../stores/animations');
+var debounce = require('debounce');
+
+var fileActions = require('../actions/files');
+var canvasActions = require('../actions/canvas');
+var animationActions = require('../actions/animations');
 
 var exportableStores = [frameStore, fileStore, canvasStore, animationStore];
-
-var exportObj = {
-  width: 1,
-  height: 1,
-  animations: {
-    idle:
-      [
-        {
-        duration: 1,
-        files: {
-          'hand.png': {
-            top: 1,
-            left: 1,
-            visible: true
-          }
-        }
-      },
-      {}
-    ]
-  }
-};
-
 var fs = require('fs');
+var exportName = 'spriteconfig.js';
 
 var exportHandler = {
-  attemptExport: function() {
+  attemptExport: debounce(function() {
     var exportObject = {
       width: canvasStore.getWidth(),
       height: canvasStore.getHeight(),
@@ -70,12 +54,35 @@ var exportHandler = {
       });
     });
 
-    fs.writeFile('test.js', 'module.exports = ' + JSON.stringify(exportObject, null, 2));
-    console.log(Object.keys(fs));
-  },
+    fs.writeFile(exportName, 'module.exports = ' + JSON.stringify(exportObject, null, 2));
+  }, 3000),
 
   attemptImport: function(data) {
+    var filesThatNeedAdded = [];
+    fs.readdir(process.cwd(), function(err, files) {
+      if (!err) {
+        filesThatNeedAdded = files.filter(file => {
+          return /.*\.(png|jpg|jpeg|bmp)/.test(file);
+        });
+      }
 
+      fs.readFile(exportName, function(err, data) {
+        if (!err) {
+          var importedData = require(process.cwd() + '/' + exportName);
+          canvasActions.setWidth(importedData.width);
+          canvasActions.setHeight(importedData.height);
+          importedData.files.forEach(file => {
+            fileActions.addFile(file, process.cwd() + '/' + file);
+          });
+        } else {
+          animationActions.addAnimation('Base');
+        }
+
+        filesThatNeedAdded.forEach(file => {
+          fileActions.addFile(file, process.cwd() + '/' + file);
+        });
+      });
+    });
   }
 };
 

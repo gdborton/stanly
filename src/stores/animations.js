@@ -3,8 +3,8 @@ var _assign = require('object-assign');
 var eventConstants = require('../constants/events');
 var appDispatcher = require('../dispatcher/app-dispatcher');
 
-var _animations = ['Base'];
-var _selectedAnimation = _animations[0];
+var _animations = [];
+var _selectedAnimation = null;
 
 var animationStore = _assign({}, events.prototype, {
   addChangeListener: function(callback) {
@@ -28,7 +28,9 @@ appDispatcher.register(function(payload) {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.ADD_ANIMATION:
-      _animations.push('Untitled' + _animations.length);
+      var animation = action.data ? action.data : 'Untitled ' + _animations.length;
+      _animations.push(animation);
+      _selectedAnimation = animation;
       animationStore.emit(eventConstants.CHANGE);
       break;
     case eventConstants.SELECT_ANIMATION:
