@@ -32,12 +32,19 @@ appDispatcher.register(function(payload) {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
-      if (!_selectedFile) {
-        _selectedFile = action.data;
+      var matchingFileExists = _files.filter(file => {
+        return file.name === action.data.name;
+      }).length > 0;
+
+      if (!matchingFileExists) {
+        if (!_selectedFile) {
+          _selectedFile = action.data;
+        }
+
+        _files.push(action.data);
+        change();
       }
 
-      _files.push(action.data);
-      change();
       break;
     case eventConstants.SELECT_FILE:
       _selectedFile = action.data;
