@@ -81,6 +81,9 @@ var exportHandler = {
             var frames = importedData.animations[animationName];
             frames.forEach(frame => {
               frameActions.addFrame();
+              if (frame.duration) {
+                frameActions.setDuration(frame.duration);
+              }
             });
           });
 
