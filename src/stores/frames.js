@@ -53,12 +53,14 @@ var handleAddFile = function(file) {
   }
 
   _frames.forEach(function(frame) {
-    frame.files[file.path] = {
-      top: 0,
-      left: 0,
-      rotation: 0,
-      visible: true,
-      filepath: file.path
+    if (!frame.files[file.path]) {
+      frame.files[file.path] = {
+        top: 0,
+        left: 0,
+        rotation: 0,
+        visible: true,
+        filepath: file.path
+      }
     }
   });
 };
@@ -69,7 +71,11 @@ var handleAddFrame = function() {
     files: {},
     animation: animationStore.getSelectedAnimation()
   };
-  var lastFrame = _frames[_frames.length - 1];
+  var _matchingFrames = _frames.filter(frame => {
+    return frame.animation === newFrame.animation;
+  });
+
+  var lastFrame = _matchingFrames.length ? _matchingFrames[_matchingFrames.length - 1] : _frames[_frames.length - 1];
 
   fileStore.getFiles().forEach(function(file) {
     var lastFileFrame = lastFrame.files[file.path];
@@ -168,6 +174,10 @@ appDispatcher.register(function(payload) {
       break;
     case eventConstants.SET_DURATION_FOR_SELECTED_FRAME:
       _selectedFrame.duration = action.data;
+      change();
+      break;
+    case eventConstants.SET_VISIBILITY_FOR_SELECTED_FILE_FRAME:
+      fileFrame.visible = action.data;
       change();
       break;
     case eventConstants.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME:

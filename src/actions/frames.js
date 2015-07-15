@@ -86,6 +86,13 @@ var frameActions = {
     });
   },
 
+  setVisible: function(visible) {
+    appDispatcher.handleAction({
+      actionType: events.SET_VISIBILITY_FOR_SELECTED_FILE_FRAME,
+      data: visible
+    });
+  },
+
   toggleFileVisibity: function() {
     appDispatcher.handleAction({
       actionType: events.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME,
