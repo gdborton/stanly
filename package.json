@@ -25,5 +25,8 @@
     "node-libs-browser": "^0.5.2",
     "object-assign": "^3.0.0",
     "react": "^0.13.3"
+  },
+  "dependencies": {
+    "debounce": "^1.0.0"
   }
 }
