@@ -70,16 +70,17 @@ var Canvas = React.createClass({
     if (this.state.selectedFrame) {
       images = this.state.files.map(function(file) {
         var fileFrame = this.state.selectedFrame.files[file.path];
-        var imageStyle = _assign({}, style.image, {
-          top: fileFrame.top,
-          left: fileFrame.left,
-          transform: 'rotate(' + fileFrame.rotation + 'deg)'
-        });
+        if (fileFrame && fileFrame.visible) {
+          var imageStyle = _assign({}, style.image, {
+            top: fileFrame.top,
+            left: fileFrame.left,
+            transform: 'rotate(' + fileFrame.rotation + 'deg)'
+          });
 
-        if (fileFrame.visible) {
           return <img style={imageStyle} src={file.path}/>
+        } else {
+          return null;
         }
-        return null;
       }.bind(this));
     }
 
