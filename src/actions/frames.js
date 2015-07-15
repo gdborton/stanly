@@ -25,7 +25,7 @@ var frameActions = {
 
   incrementLeft: function() {
     appDispatcher.handleAction({
-      actionType: events.INCREMENT_Left_FOR_SELECTED_FILE_FRAME,
+      actionType: events.INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME,
       data: null
     });
   },
