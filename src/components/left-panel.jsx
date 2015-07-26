@@ -10,7 +10,8 @@ var styles = {
     padding: globalStyles.sizes.containerPadding,
     boxSizing: 'border-box',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    width: 150
   },
   children: {
     flex: 1

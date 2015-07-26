@@ -40,19 +40,9 @@ var Files = React.createClass({
     return (
       <div style={style}>
         <div>Files</div>
-        <input multiple={true} type='file' accept="image/x-png, image/gif, image/jpeg" onChange={this._handleFileChange}/>
         {files}
       </div>
     );
-  },
-
-  _handleFileChange: function(event) {
-    var files = event.target.files;
-    if (files.length) {
-      [].forEach.call(files, function (file) {
-        fileActions.addFile(file.name, file.path);
-      });
-    }
   },
 
   _handleSelectFile: function(file) {

@@ -56,7 +56,7 @@ var Frames = React.createClass({
     return (
       <div style={styles.container}>
         Frames: {this.state.frames.length} Animation Duration: {frameDuration}s <a onClick={this.handleNewFrameClick} >+</a> <a onClick={this.handleTogglePlayClick}>{this.state.isPlaying ? 'PAUSE' : 'PLAY'}</a>
-      <div style={{marginTop: 50}}>
+        <div>
           {frames}
         </div>
       </div>
