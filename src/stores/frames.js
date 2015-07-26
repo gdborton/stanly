@@ -92,6 +92,16 @@ var handleAddFrame = function() {
   _selectedFrame = _frames[_frames.length - 1];
 };
 
+var handleFileNameChange = function(oldPath, newName) {
+  _frames.forEach(function(frame) {
+    var newPath = oldPath.substring(0, oldPath.lastIndexOf('/') + 1) + newName;
+    frame.files[newPath] = frame.files[oldPath];
+    delete frame.files[oldPath];
+  });
+
+  change();
+};
+
 var togglePlaying = function() {
   _isPlaying = !_isPlaying;
   if (_isPlaying) {
@@ -163,6 +173,10 @@ appDispatcher.register(function(payload) {
     case eventConstants.INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
       fileFrame.left++;
       change();
+      break;
+    case eventConstants.RENAME_FILE:
+      appDispatcher.waitFor([fileStore.dispatchToken]);
+      handleFileNameChange(action.data.oldPath, action.data.newName);
       break;
     case eventConstants.ROTATE_LEFT_FOR_SELECTED_FILE_FRAME:
       fileFrame.rotation--;

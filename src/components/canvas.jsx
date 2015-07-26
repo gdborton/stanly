@@ -17,7 +17,7 @@ var Canvas = React.createClass({
 
   _updateFrameStoreState: function() {
     this.setState({
-      selectedFrame: frameStore.getSelectedFrame(),
+      selectedFrame: frameStore.getSelectedFrame()
     });
   },
 

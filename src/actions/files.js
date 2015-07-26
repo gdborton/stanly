@@ -12,6 +12,17 @@ var fileActions = {
     });
   },
 
+  renameFile: function(file, newName) {
+    appDispatcher.handleAction({
+      actionType: events.RENAME_FILE,
+      data: {
+        file: file,
+        newName: newName,
+        oldPath: file.path
+      }
+    });
+  },
+
   selectFile: function(file) {
     appDispatcher.handleAction({
       actionType: events.SELECT_FILE,
