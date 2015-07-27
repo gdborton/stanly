@@ -37,7 +37,7 @@ var Animations = React.createClass({
         backgroundColor: animation === this.state.selectedAnimation ? '#29516d' : undefined
       };
 
-      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} onContextMenu={this._handleContextMenu.bind(this, animation)} onDoubleClick={this._handleAnimationDoubleClick}>{animation}</div>;
+      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} onContextMenu={this._handleContextMenu.bind(this, animation)}>{animation}</div>;
     });
 
     var style = _assign({}, this.props.style);
@@ -55,12 +55,6 @@ var Animations = React.createClass({
     animationActions.addAnimation();
   },
 
-  _handleAnimationDoubleClick() {
-    this.setState({
-      renaming: true
-    });
-  },
-
   _handleAnimationNameChange(newAnimationName) {
     animationActions.renameAnimation(this.state.selectedAnimation, newAnimationName);
     this.setState({
@@ -75,7 +69,11 @@ var Animations = React.createClass({
   _handleContextMenu(animation, event) {
     contextMenuActions.openContextMenu([{
       display: 'Rename',
-      onClick: this._handleAnimationDoubleClick
+      onClick: () => {
+        this.setState({
+          renaming: true
+        });
+      }
     }], event);
   }
 });
