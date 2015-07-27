@@ -1,31 +1,31 @@
-var React = require('react');
-var canvasStore = require('../stores/canvas');
-var canvasActions = require('../actions/canvas');
+import React  from 'react';
+import canvasStore  from '../stores/canvas';
+import canvasActions  from '../actions/canvas';
 
 var CanvasSettings = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       canvasHeight: canvasStore.getHeight(),
       canvasWidth: canvasStore.getWidth()
     }
   },
 
-  _updateCanvasStoreState: function() {
+  _updateCanvasStoreState() {
     this.setState({
       canvasHeight: canvasStore.getHeight(),
       canvasWidth: canvasStore.getWidth()
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     canvasStore.addChangeListener(this._updateCanvasStoreState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     canvasStore.removeChangeListener(this._updateCanvasStoreState);
   },
 
-  render: function() {
+  render() {
     return (
       <div>
         Width: <input value={this.state.canvasWidth} onChange={this._handleWidthChange} />
@@ -34,13 +34,13 @@ var CanvasSettings = React.createClass({
     );
   },
 
-  _handleWidthChange: function(event) {
+  _handleWidthChange(event) {
     canvasActions.setWidth(event.target.value);
   },
 
-  _handleHeightChange: function() {
+  _handleHeightChange() {
     canvasActions.setHeight(event.target.value);
   }
 });
 
-module.exports = CanvasSettings;
+export default CanvasSettings;

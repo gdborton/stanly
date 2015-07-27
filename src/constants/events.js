@@ -1,4 +1,4 @@
-module.exports = {
+var eventConstants = {
   ADD_ANIMATION: 'ADD_ANIMATION',
   ADD_FILE: 'ADD_FILE',
   ADD_FRAME: 'ADD_FRAME',
@@ -26,3 +26,5 @@ module.exports = {
   TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME: 'TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME',
   TOGGLE_PLAYING: 'TOGGLE_PLAYING'
 };
+
+export default eventConstants;

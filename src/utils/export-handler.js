@@ -1,20 +1,20 @@
-var frameStore = require('../stores/frames');
-var fileStore = require('../stores/files');
-var canvasStore = require('../stores/canvas');
-var animationStore = require('../stores/animations');
-var debounce = require('debounce');
+import frameStore from '../stores/frames';
+import fileStore from '../stores/files';
+import canvasStore from '../stores/canvas';
+import animationStore from '../stores/animations';
+import debounce from 'debounce';
 
-var fileActions = require('../actions/files');
-var canvasActions = require('../actions/canvas');
-var animationActions = require('../actions/animations');
-var frameActions = require('../actions/frames');
+import fileActions from '../actions/files';
+import canvasActions from '../actions/canvas';
+import animationActions from '../actions/animations';
+import frameActions from '../actions/frames';
+import fs from 'fs';
 
 var exportableStores = [frameStore, fileStore, canvasStore, animationStore];
-var fs = require('fs');
 var exportName = 'spriteconfig.js';
 
 var exportHandler = {
-  attemptExport: debounce(function() {
+  attemptExport: debounce(() => {
     var exportObject = {
       width: canvasStore.getWidth(),
       height: canvasStore.getHeight(),
@@ -25,8 +25,8 @@ var exportHandler = {
       animations: {}
     };
 
-    animationStore.getAnimations().forEach(function(animation) {
-      var animationFrames = frameStore.getFrames().filter(function(frame) {
+    animationStore.getAnimations().forEach(animation => {
+      var animationFrames = frameStore.getFrames().filter(frame => {
         return frame.animation === animation;
       });
 
@@ -57,16 +57,16 @@ var exportHandler = {
     fs.writeFile(exportName, 'module.exports = ' + JSON.stringify(exportObject, null, 2));
   }, 3000),
 
-  attemptImport: function(data) {
+  attemptImport(data) {
     var filesThatNeedAdded = [];
-    fs.readdir(process.cwd(), function(err, files) {
+    fs.readdir(process.cwd(), (err, files) => {
       if (!err) {
         filesThatNeedAdded = files.filter(file => {
           return /.*\.(png|jpg|jpeg|bmp)/.test(file);
         });
       }
 
-      fs.readFile(exportName, function(err, data) {
+      fs.readFile(exportName, (err, data) => {
         if (!err) {
           var importedData = require(process.cwd() + '/' + exportName);
           canvasActions.setWidth(importedData.width);
@@ -109,8 +109,8 @@ var exportHandler = {
   }
 };
 
-exportableStores.forEach(function(store) {
+exportableStores.forEach((store) => {
   store.addChangeListener(exportHandler.attemptExport);
 });
 
-module.exports = exportHandler;
+export default exportHandler;

@@ -1,8 +1,8 @@
-var React = require('react');
-var frameStore = require('../stores/frames');
-var fileStore = require('../stores/files');
-var frameActions = require('../actions/frames');
-var globalStyles = require('../global-styles');
+import React from 'react';
+import frameStore from '../stores/frames';
+import fileStore from '../stores/files';
+import frameActions from '../actions/frames';
+import globalStyles from '../global-styles';
 
 var styles = {
   container: {
@@ -14,36 +14,36 @@ var styles = {
 };
 
 var FrameEditorPanel = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       selectedFrame: frameStore.getSelectedFrame(),
       selectedFile: fileStore.getSelectedFile()
     }
   },
 
-  _updateFrameStoreState: function() {
+  _updateFrameStoreState() {
     this.setState({
       selectedFrame: frameStore.getSelectedFrame()
     });
   },
 
-  _updateFileStoreState: function() {
+  _updateFileStoreState() {
     this.setState({
       selectedFile: fileStore.getSelectedFile()
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     frameStore.addChangeListener(this._updateFrameStoreState);
     fileStore.addChangeListener(this._updateFileStoreState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
     fileStore.removeChangeListener(this._updateFileStoreState);
   },
 
-  render: function() {
+  render() {
     var editingObject = {};
     if (this.state.selectedFrame && this.state.selectedFile) {
       editingObject = this.state.selectedFrame.files[this.state.selectedFile.path];
@@ -56,33 +56,33 @@ var FrameEditorPanel = React.createClass({
         left: <input value={editingObject.left} onChange={this._handleLeftChange} />
         Rotation: <input value={editingObject.rotation} onChange={this._handleRotationChange} />
         Visible: <input type="checkbox" checked={editingObject.visible} onChange={this._handleToggleVisibility} />
-      <div>
-        Frame Settings
-        Duration: <input value={this.state.selectedFrame ? this.state.selectedFrame.duration : 0} onChange={this._handleDurationChange} />
-      </div>
+        <div>
+          Frame Settings
+          Duration: <input value={this.state.selectedFrame ? this.state.selectedFrame.duration : 0} onChange={this._handleDurationChange} />
+        </div>
       </div>
     );
   },
 
-  _handleTopChange: function(event) {
+  _handleTopChange(event) {
     frameActions.setTop(event.target.value);
   },
 
-  _handleLeftChange: function(event) {
+  _handleLeftChange(event) {
     frameActions.setLeft(event.target.value);
   },
 
-  _handleRotationChange: function(event) {
+  _handleRotationChange(event) {
     frameActions.setRotation(event.target.value);
   },
 
-  _handleToggleVisibility: function(event) {
+  _handleToggleVisibility(event) {
     frameActions.toggleFileVisibity();
   },
 
-  _handleDurationChange: function(event) {
+  _handleDurationChange(event) {
     frameActions.setDuration(event.target.value);
   }
 });
 
-module.exports = FrameEditorPanel;
+export default FrameEditorPanel;

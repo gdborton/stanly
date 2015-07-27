@@ -1,34 +1,34 @@
-var React = require('react');
-var fileStore = require('../stores/files');
-var fileActions = require('../actions/files');
-var globalStyles = require('../global-styles');
-var _assign = require('object-assign');
-var RenameModal = require('./rename-modal');
+import React  from 'react';
+import fileStore  from '../stores/files';
+import fileActions  from '../actions/files';
+import globalStyles  from '../global-styles';
+import _assign  from 'object-assign';
+import RenameModal  from './rename-modal';
 
 var Files = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       files: fileStore.getFiles(),
       selectedFile: fileStore.getSelectedFile()
     };
   },
 
-  _updateFileStoreState: function() {
+  _updateFileStoreState() {
     this.setState({
       files: fileStore.getFiles(),
       selectedFile: fileStore.getSelectedFile()
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     fileStore.addChangeListener(this._updateFileStoreState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     fileStore.removeChangeListener(this._updateFileStoreState);
   },
 
-  render: function() {
+  render() {
     var files = this.state.files.map(file => {
       var style = {
         cursor: 'pointer',
@@ -66,4 +66,4 @@ var Files = React.createClass({
   }
 });
 
-module.exports = Files;
+export default Files;

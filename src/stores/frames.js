@@ -1,9 +1,9 @@
-var events = require('events');
-var _assign = require('object-assign');
-var eventConstants = require('../constants/events');
-var appDispatcher = require('../dispatcher/app-dispatcher');
-var fileStore = require('./files');
-var animationStore = require('./animations');
+import events from 'events';
+import _assign from 'object-assign';
+import eventConstants from '../constants/events';
+import appDispatcher from '../dispatcher/app-dispatcher';
+import fileStore from './files';
+import animationStore from './animations';
 
 var _frames = [];
 var _selectedFrame = null;
@@ -11,29 +11,29 @@ var _isPlaying = false;
 var _frameTimer = false;
 
 var frameStore = _assign({}, events.prototype, {
-  addChangeListener: function(callback) {
+  addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
 
-  removeChangeListener: function() {
+  removeChangeListener() {
     this.removeListener(eventConstants.CHANGE, callback);
   },
 
-  getFrames: function() {
+  getFrames() {
     return _frames;
   },
 
-  getFramesForSelectedAnimation: function() {
-    return _frames.filter(function(frame) {
+  getFramesForSelectedAnimation() {
+    return _frames.filter(frame => {
       return frame.animation === animationStore.getSelectedAnimation();
     });
   },
 
-  getSelectedFrame: function() {
+  getSelectedFrame() {
     return _selectedFrame;
   },
 
-  getIsPlaying: function() {
+  getIsPlaying() {
     return _isPlaying;
   }
 });
@@ -52,7 +52,7 @@ var handleAddFile = function(file) {
     _selectedFrame = _frames[0];
   }
 
-  _frames.forEach(function(frame) {
+  _frames.forEach(frame => {
     if (!frame.files[file.path]) {
       frame.files[file.path] = {
         top: 0,
@@ -77,7 +77,7 @@ var handleAddFrame = function() {
 
   var lastFrame = _matchingFrames.length ? _matchingFrames[_matchingFrames.length - 1] : _frames[_frames.length - 1];
 
-  fileStore.getFiles().forEach(function(file) {
+  fileStore.getFiles().forEach(file => {
     var lastFileFrame = lastFrame.files[file.path];
     newFrame.files[file.path] = {
       top: lastFileFrame.top,
@@ -93,7 +93,7 @@ var handleAddFrame = function() {
 };
 
 var handleFileNameChange = function(oldPath, newName) {
-  _frames.forEach(function(frame) {
+  _frames.forEach(frame => {
     var newPath = oldPath.substring(0, oldPath.lastIndexOf('/') + 1) + newName;
     frame.files[newPath] = frame.files[oldPath];
     delete frame.files[oldPath];
@@ -114,7 +114,7 @@ var togglePlaying = function() {
 var setupTimer = function() {
   var frames = frameStore.getFramesForSelectedAnimation();
 
-  _frameTimer = setTimeout(function() {
+  _frameTimer = setTimeout(() => {
     var selectedFrameIndex = frames.indexOf(_selectedFrame);
     if (selectedFrameIndex === frames.length - 1) {
       _selectedFrame = frames[0];
@@ -127,7 +127,7 @@ var setupTimer = function() {
   }, _selectedFrame.duration);
 };
 
-appDispatcher.register(function(payload) {
+appDispatcher.register(payload => {
   var action = payload.action;
   if (_selectedFrame && _selectedFrame.files && fileStore.getSelectedFile()) {
     var fileFrame = _selectedFrame.files[fileStore.getSelectedFile().path];
@@ -211,4 +211,4 @@ appDispatcher.register(function(payload) {
   }
 });
 
-module.exports = frameStore;
+export default frameStore;

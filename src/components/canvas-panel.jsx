@@ -1,8 +1,8 @@
-var React = require('react');
-var globalStyles = require('../global-styles');
-var Canvas = require('./canvas');
-var CanvasSettings = require('./canvas-settings');
-var Frames = require('./frames');
+import React from 'react';
+import globalStyles from '../global-styles';
+import Canvas from './canvas';
+import CanvasSettings from './canvas-settings';
+import Frames from './frames';
 
 var borderStyle = '1px solid #181a1f';
 var styles = {
@@ -31,7 +31,7 @@ var styles = {
 };
 
 var CanvasPanel = React.createClass({
-  render: function() {
+  render() {
     return (
       <div style={styles.container}>
         <div style={styles.framesContainer}>
@@ -48,4 +48,4 @@ var CanvasPanel = React.createClass({
   }
 });
 
-module.exports = CanvasPanel;
+export default CanvasPanel;

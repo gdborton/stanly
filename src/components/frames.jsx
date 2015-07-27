@@ -1,7 +1,7 @@
-var React = require('react');
-var frameStore = require('../stores/frames');
-var globalStyles = require('../global-styles');
-var frameActions = require('../actions/frames');
+import React from 'react';
+import frameStore from '../stores/frames';
+import globalStyles from '../global-styles';
+import frameActions from '../actions/frames';
 
 var styles = {
   container: {
@@ -11,7 +11,7 @@ var styles = {
 }
 
 var Frames = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       frames: frameStore.getFramesForSelectedAnimation(),
       isPlaying: frameStore.getIsPlaying(),
@@ -19,7 +19,7 @@ var Frames = React.createClass({
     };
   },
 
-  _updateFrameStoreState: function() {
+  _updateFrameStoreState() {
     this.setState({
       frames: frameStore.getFramesForSelectedAnimation(),
       isPlaying: frameStore.getIsPlaying(),
@@ -27,16 +27,16 @@ var Frames = React.createClass({
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     frameStore.addChangeListener(this._updateFrameStoreState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
   },
 
-  render: function() {
-    var frames = this.state.frames.map(function(frame, index) {
+  render() {
+    var frames = this.state.frames.map((frame, index) => {
       var style = {
         width: 10,
         height: 10,
@@ -45,12 +45,13 @@ var Frames = React.createClass({
         display: 'inline-block'
       };
       return <div key={index} style={style} onClick={this.handleFrameClick.bind(this, frame)} />;
-    }.bind(this));
+    });
 
     var frameDuration = 0;
-    this.state.frames.forEach(function(frame) {
+    this.state.frames.forEach(frame => {
       frameDuration += parseInt(frame.duration);
     });
+
     frameDuration = frameDuration / 1000;
 
     return (
@@ -63,17 +64,17 @@ var Frames = React.createClass({
     );
   },
 
-  handleFrameClick: function(frame) {
+  handleFrameClick(frame) {
     frameActions.selectFrame(frame);
   },
 
-  handleNewFrameClick: function() {
+  handleNewFrameClick() {
     frameActions.addFrame();
   },
 
-  handleTogglePlayClick: function() {
+  handleTogglePlayClick() {
     frameActions.togglePlaying();
   }
 });
 
-module.exports = Frames;
+export default Frames;

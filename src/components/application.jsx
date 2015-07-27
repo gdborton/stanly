@@ -1,12 +1,12 @@
-var React = require('react');
-var CanvasPanel = require('./canvas-panel');
-var FrameEditorPanel = require('./frame-editor-panel');
-var globalStyles = require('../global-styles');
-var LeftPanel = require('./left-panel');
-var keyConstants = require('../constants/keys');
-var frameActions = require('../actions/frames');
-var fileActions = require('../actions/files');
-var exportHandler = require('../utils/export-handler');
+import React from 'react';
+import CanvasPanel from './canvas-panel';
+import FrameEditorPanel from './frame-editor-panel';
+import globalStyles from '../global-styles';
+import LeftPanel from './left-panel';
+import keyConstants from '../constants/keys';
+import frameActions from '../actions/frames';
+import fileActions from '../actions/files';
+import exportHandler from '../utils/export-handler';
 
 exportHandler.attemptImport();
 
@@ -20,11 +20,11 @@ var styles = {
 };
 
 var Application = React.createClass({
-  componentDidMount: function() {
+  componentDidMount() {
     document.body.onkeydown = this._handleKeyUp;
   },
 
-  render: function() {
+  render() {
     return (
       <div style={styles.application}>
         <LeftPanel />
@@ -34,14 +34,14 @@ var Application = React.createClass({
     );
   },
 
-  _handleKeyUp: function(event) {
-    console.log('key pressed', event.which);
+  _handleKeyUp(event) {
+    //console.log('key pressed', event.which);
     var keyHandlers = {};
-    keyHandlers[keyConstants.UP] = function(event) {
+    keyHandlers[keyConstants.UP] = (event) => {
       event.ctrlKey ? fileActions.moveSelectedFileUp() : frameActions.decrementTop();
     };
 
-    keyHandlers[keyConstants.DOWN] = function() {
+    keyHandlers[keyConstants.DOWN] = () => {
       event.ctrlKey ? fileActions.moveSelectedFileDown() : frameActions.incrementTop();
     };
 
@@ -60,4 +60,4 @@ var Application = React.createClass({
 
 React.render(<Application/>, document.body);
 
-module.exports = Application;
+export default Application;

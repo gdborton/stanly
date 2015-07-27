@@ -1,12 +1,12 @@
-var React = require('react');
-var frameStore = require('../stores/frames');
-var canvasActions = require('../actions/canvas');
-var canvasStore = require('../stores/canvas');
-var _assign = require('object-assign');
-var fileStore = require('../stores/files');
+import React from 'react';
+import frameStore from '../stores/frames';
+import canvasActions from '../actions/canvas';
+import canvasStore from '../stores/canvas';
+import _assign from 'object-assign';
+import fileStore from '../stores/files';
 
 var Canvas = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       selectedFrame: frameStore.getSelectedFrame(),
       files: fileStore.getFiles(),
@@ -15,38 +15,38 @@ var Canvas = React.createClass({
     }
   },
 
-  _updateFrameStoreState: function() {
+  _updateFrameStoreState() {
     this.setState({
       selectedFrame: frameStore.getSelectedFrame()
     });
   },
 
-  _updateFileStoreState: function() {
+  _updateFileStoreState() {
     this.setState({
       files: fileStore.getFiles()
     });
   },
 
-  _updateCanvasStoreState: function() {
+  _updateCanvasStoreState() {
     this.setState({
       canvasHeight: canvasStore.getHeight(),
       canvasWidth: canvasStore.getWidth()
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     frameStore.addChangeListener(this._updateFrameStoreState);
     canvasStore.addChangeListener(this._updateCanvasStoreState);
     fileStore.addChangeListener(this._updateFileStoreState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
     canvasStore.removeChangeListener(this._updateCanvasStoreState);
     fileStore.removeChangeListener(this._updateFileStoreState);
   },
 
-  render: function() {
+  render() {
     var style = {
       canvas: {
         position: 'relative',
@@ -68,7 +68,7 @@ var Canvas = React.createClass({
     };
     var images = [];
     if (this.state.selectedFrame) {
-      images = this.state.files.map(function(file) {
+      images = this.state.files.map((file) => {
         var fileFrame = this.state.selectedFrame.files[file.path];
         if (fileFrame && fileFrame.visible) {
           var imageStyle = _assign({}, style.image, {
@@ -81,7 +81,7 @@ var Canvas = React.createClass({
         } else {
           return null;
         }
-      }.bind(this));
+      });
     }
 
     return (
@@ -94,4 +94,4 @@ var Canvas = React.createClass({
   }
 });
 
-module.exports = Canvas;
+export default Canvas;

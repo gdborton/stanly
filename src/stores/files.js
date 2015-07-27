@@ -1,26 +1,26 @@
-var events = require('events');
-var _assign = require('object-assign');
-var eventConstants = require('../constants/events');
-var appDispatcher = require('../dispatcher/app-dispatcher');
-var fs = require('fs');
+import events from 'events';
+import _assign from 'object-assign';
+import eventConstants from '../constants/events';
+import appDispatcher from '../dispatcher/app-dispatcher';
+import fs from 'fs';
 
 var _files = [];
 var _selectedFile = null;
 
 var fileStore = _assign({}, events.prototype, {
-  addChangeListener: function(callback) {
+  addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
 
-  removeChangeListener: function() {
+  removeChangeListener() {
     this.removeListener(eventConstants.CHANGE, callback);
   },
 
-  getFiles: function() {
+  getFiles() {
     return _files;
   },
 
-  getSelectedFile: function() {
+  getSelectedFile() {
     return _selectedFile;
   }
 });
@@ -29,7 +29,7 @@ var change = function() {
   fileStore.emit(eventConstants.CHANGE);
 };
 
-fileStore.dispatchToken = appDispatcher.register(function(payload) {
+fileStore.dispatchToken = appDispatcher.register(payload => {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
@@ -82,7 +82,7 @@ fileStore.dispatchToken = appDispatcher.register(function(payload) {
       break;
     case eventConstants.RENAME_FILE:
       var newPath = action.data.file.path.substring(0, action.data.file.path.lastIndexOf('/') + 1) + action.data.newName;
-      fs.rename(action.data.file.path, newPath, function(err) {
+      fs.rename(action.data.file.path, newPath, err => {
         if (!err) {
           action.data.file.path = newPath;
           action.data.file.name = action.data.newName;
@@ -96,4 +96,4 @@ fileStore.dispatchToken = appDispatcher.register(function(payload) {
   }
 });
 
-module.exports = fileStore;
+export default fileStore;

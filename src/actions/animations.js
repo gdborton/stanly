@@ -1,15 +1,15 @@
-var appDispatcher = require('../dispatcher/app-dispatcher');
-var events = require('../constants/events');
+import appDispatcher from '../dispatcher/app-dispatcher';
+import events from '../constants/events';
 
 var animationActions = {
-  addAnimation: function(animationName) {
+  addAnimation(animationName) {
     appDispatcher.handleAction({
       actionType: events.ADD_ANIMATION,
       data: animationName
     });
   },
 
-  selectAnimation: function(animation) {
+  selectAnimation(animation) {
     appDispatcher.handleAction({
       actionType: events.SELECT_ANIMATION,
       data: animation
@@ -17,4 +17,4 @@ var animationActions = {
   }
 };
 
-module.exports = animationActions;
+export default animationActions;

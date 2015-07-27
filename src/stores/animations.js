@@ -1,30 +1,30 @@
-var events = require('events');
-var _assign = require('object-assign');
-var eventConstants = require('../constants/events');
-var appDispatcher = require('../dispatcher/app-dispatcher');
+import events from 'events';
+import _assign from 'object-assign';
+import eventConstants from '../constants/events';
+import appDispatcher from '../dispatcher/app-dispatcher';
 
 var _animations = [];
 var _selectedAnimation = null;
 
 var animationStore = _assign({}, events.prototype, {
-  addChangeListener: function(callback) {
+  addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
 
-  removeChangeListener: function() {
+  removeChangeListener() {
     this.removeListener(eventConstants.CHANGE, callback);
   },
 
-  getAnimations: function() {
+  getAnimations() {
     return _animations;
   },
 
-  getSelectedAnimation: function() {
+  getSelectedAnimation() {
     return _selectedAnimation;
   }
 });
 
-appDispatcher.register(function(payload) {
+appDispatcher.register((payload) => {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.ADD_ANIMATION:
@@ -42,4 +42,4 @@ appDispatcher.register(function(payload) {
   }
 });
 
-module.exports = animationStore;
+export default animationStore;

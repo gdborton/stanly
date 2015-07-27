@@ -1,38 +1,39 @@
-var React = require('react');
-var animationStore = require('../stores/animations');
-var animationActions = require('../actions/animations');
-var _assign = require('object-assign');
+import React from'react';
+import animationStore from'../stores/animations';
+import animationActions from'../actions/animations';
+import _assign from'object-assign';
 
 var Animations = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return {
       animations: animationStore.getAnimations(),
       selectedAnimation: animationStore.getSelectedAnimation()
     };
   },
 
-  _updateAnimationStoreState: function() {
+  _updateAnimationStoreState() {
     this.setState({
       animations: animationStore.getAnimations(),
       selectedAnimation: animationStore.getSelectedAnimation()
     });
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     animationStore.addChangeListener(this._updateAnimationStoreState);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     animationStore.removeChangeListener(this._updateAnimationStoreState);
   },
 
-  render: function() {
-    var animations = this.state.animations.map(function(animation) {
+  render() {
+    var animations = this.state.animations.map((animation) => {
       var style = {
         backgroundColor: animation === this.state.selectedAnimation ? '#29516d' : undefined
       };
       return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)}>{animation}</div>;
-    }.bind(this));
+    });
+
     var style = _assign({}, this.props.style);
     return (
       <div style={style}>
@@ -42,13 +43,13 @@ var Animations = React.createClass({
     );
   },
 
-  _handleAddAnimation: function() {
+  _handleAddAnimation() {
     animationActions.addAnimation();
   },
 
-  _handleSelectAnimation: function(animation) {
+  _handleSelectAnimation(animation) {
     animationActions.selectAnimation(animation);
   }
 });
 
-module.exports = Animations;
+export default Animations;

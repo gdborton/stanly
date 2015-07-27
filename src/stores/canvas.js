@@ -1,30 +1,30 @@
-var events = require('events');
-var _assign = require('object-assign');
-var eventConstants = require('../constants/events');
-var appDispatcher = require('../dispatcher/app-dispatcher');
+import events from 'events';
+import _assign from 'object-assign';
+import eventConstants from '../constants/events';
+import appDispatcher from '../dispatcher/app-dispatcher';
 
 var _width = 300;
 var _height = 300;
 
 var canvasStore = _assign({}, events.prototype, {
-  addChangeListener: function(callback) {
+  addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
 
-  removeChangeListener: function() {
+  removeChangeListener() {
     this.removeListener(eventConstants.CHANGE, callback);
   },
 
-  getWidth: function() {
+  getWidth() {
     return _width;
   },
 
-  getHeight: function() {
+  getHeight() {
     return _height;
   }
 });
 
-appDispatcher.register(function(payload) {
+appDispatcher.register(payload => {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.SET_CANVAS_WIDTH:
@@ -40,4 +40,4 @@ appDispatcher.register(function(payload) {
   }
 });
 
-module.exports = canvasStore;
+export default canvasStore;

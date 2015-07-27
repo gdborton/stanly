@@ -1,4 +1,4 @@
-var flux = require('flux');
+import flux from 'flux';
 var appDispatcher = new flux.Dispatcher();
 
 appDispatcher.handleAction = function(action) {
@@ -8,4 +8,4 @@ appDispatcher.handleAction = function(action) {
   });
 };
 
-module.exports = appDispatcher;
+export default appDispatcher;

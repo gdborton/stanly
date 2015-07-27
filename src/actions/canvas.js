@@ -1,15 +1,15 @@
-var appDispatcher = require('../dispatcher/app-dispatcher');
-var events = require('../constants/events');
+import appDispatcher from '../dispatcher/app-dispatcher';
+import events from'../constants/events';
 
 var canvasActions = {
-  setHeight: function(height) {
+  setHeight(height) {
     appDispatcher.handleAction({
       actionType: events.SET_CANVAS_HEIGHT,
       data: height
     });
   },
 
-  setWidth: function(width) {
+  setWidth(width) {
     appDispatcher.handleAction({
       actionType: events.SET_CANVAS_WIDTH,
       data: width
@@ -17,4 +17,4 @@ var canvasActions = {
   }
 };
 
-module.exports = canvasActions;
+export default canvasActions;

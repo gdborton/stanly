@@ -1,7 +1,7 @@
-var React = require('react');
-var globalStyles = require('../global-styles');
-var Files = require('./files');
-var Animations = require('./animations');
+import React from 'react';
+import globalStyles from '../global-styles';
+import Files from './files';
+import Animations from './animations';
 
 var styles = {
   container: {
@@ -19,7 +19,7 @@ var styles = {
 };
 
 var LeftPanel = React.createClass({
-  render: function() {
+  render() {
     return (
       <div style={styles.container}>
         <Files style={styles.children} />
@@ -29,4 +29,4 @@ var LeftPanel = React.createClass({
   }
 });
 
-module.exports = LeftPanel;
+export default LeftPanel;

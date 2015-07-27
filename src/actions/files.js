@@ -1,8 +1,8 @@
-var appDispatcher = require('../dispatcher/app-dispatcher');
-var events = require('../constants/events');
+import appDispatcher from '../dispatcher/app-dispatcher';
+import events from '../constants/events';
 
 var fileActions = {
-  addFile: function(fileName, filePath) {
+  addFile(fileName, filePath) {
     appDispatcher.handleAction({
       actionType: events.ADD_FILE,
       data: {
@@ -12,7 +12,7 @@ var fileActions = {
     });
   },
 
-  renameFile: function(file, newName) {
+  renameFile(file, newName) {
     appDispatcher.handleAction({
       actionType: events.RENAME_FILE,
       data: {
@@ -23,28 +23,28 @@ var fileActions = {
     });
   },
 
-  selectFile: function(file) {
+  selectFile(file) {
     appDispatcher.handleAction({
       actionType: events.SELECT_FILE,
       data: file
     });
   },
 
-  selectFileByName: function(fileName) {
+  selectFileByName(fileName) {
     appDispatcher.handleAction({
       actionType: events.SELECT_FILE_BY_NAME,
       data: fileName
     });
   },
 
-  moveSelectedFileUp: function() {
+  moveSelectedFileUp() {
     appDispatcher.handleAction({
       actionType: events.MOVE_SELECTED_FILE_UP,
       data: null
     });
   },
 
-  moveSelectedFileDown: function() {
+  moveSelectedFileDown() {
     appDispatcher.handleAction({
       actionType: events.MOVE_SELECTED_FILE_DOWN,
       data: null
@@ -52,4 +52,4 @@ var fileActions = {
   }
 };
 
-module.exports = fileActions;
+export default fileActions;

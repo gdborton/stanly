@@ -1,4 +1,4 @@
-module.exports = {
+var globalStyles = {
   colors: {
     outsidePanelBackground: '#21252b',
     insidePanelBackground: '#282c34',
@@ -9,4 +9,6 @@ module.exports = {
   sizes: {
     containerPadding: '8px'
   }
-}
+};
+
+export default globalStyles;
