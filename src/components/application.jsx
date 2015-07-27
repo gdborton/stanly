@@ -1,6 +1,7 @@
 import React from 'react';
 import CanvasPanel from './canvas-panel';
 import FrameEditorPanel from './frame-editor-panel';
+import RenameModal from './rename-modal';
 import globalStyles from '../global-styles';
 import LeftPanel from './left-panel';
 import keyConstants from '../constants/keys';
@@ -30,6 +31,7 @@ var Application = React.createClass({
         <LeftPanel />
         <CanvasPanel />
         <FrameEditorPanel />
+        <RenameModal />
       </div>
     );
   },

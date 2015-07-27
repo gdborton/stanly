@@ -3,7 +3,7 @@ import fileStore  from '../stores/files';
 import fileActions  from '../actions/files';
 import globalStyles  from '../global-styles';
 import _assign  from 'object-assign';
-import RenameModal  from './rename-modal';
+import renameModalActions  from '../actions/rename-modal';
 import contextMenuActions from '../actions/context-menu';
 
 var Files = React.createClass({
@@ -44,7 +44,6 @@ var Files = React.createClass({
       <div style={style}>
         <div>Files</div>
         {files}
-        {this.state.renaming ? <RenameModal value={this.state.selectedFile.name} onChange={this._handleFileNameChange}/> : null}
       </div>
     );
   },
@@ -53,19 +52,12 @@ var Files = React.createClass({
     fileActions.selectFile(file);
   },
 
-  _handleFileNameChange(value) {
-    fileActions.renameFile(this.state.selectedFile, value);
-    this.setState({
-      renaming: false
-    });
-  },
-
   _handleContextMenu(file, event) {
     fileActions.selectFile(file);
     contextMenuActions.openContextMenu([{
       display: 'Rename',
       onClick: () => {
-        this.setState({renaming: true});
+        renameModalActions.open(file.name, fileActions.renameFile.bind(this, this.state.selectedFile));
       }
     }], event);
   }

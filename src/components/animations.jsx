@@ -2,7 +2,7 @@ import React from'react';
 import animationStore from'../stores/animations';
 import animationActions from'../actions/animations';
 import _assign from'object-assign';
-import RenameModal from './rename-modal';
+import renameModalActions from '../actions/rename-modal';
 import ContextMenu from './context-menu';
 import contextMenuActions from '../actions/context-menu';
 
@@ -11,7 +11,6 @@ var Animations = React.createClass({
     return {
       animations: animationStore.getAnimations(),
       selectedAnimation: animationStore.getSelectedAnimation(),
-      renaming: false,
       contextMenuOpen: false
     };
   },
@@ -45,7 +44,6 @@ var Animations = React.createClass({
       <div style={style}>
         <div>Animations <a onClick={this._handleAddAnimation}>+</a></div>
         {animations}
-        {this.state.renaming ? <RenameModal value={this.state.selectedAnimation} onChange={this._handleAnimationNameChange}/> : null}
         <ContextMenu/>
       </div>
     );
@@ -53,13 +51,6 @@ var Animations = React.createClass({
 
   _handleAddAnimation() {
     animationActions.addAnimation();
-  },
-
-  _handleAnimationNameChange(newAnimationName) {
-    animationActions.renameAnimation(this.state.selectedAnimation, newAnimationName);
-    this.setState({
-      renaming: false
-    });
   },
 
   _handleSelectAnimation(animation) {
@@ -70,8 +61,8 @@ var Animations = React.createClass({
     contextMenuActions.openContextMenu([{
       display: 'Rename',
       onClick: () => {
-        this.setState({
-          renaming: true
+        renameModalActions.open(this.state.selectedAnimation, (newValue) => {
+          animationActions.renameAnimation(this.state.selectedAnimation, newValue);
         });
       }
     }], event);

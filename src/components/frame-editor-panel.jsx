@@ -46,7 +46,7 @@ var FrameEditorPanel = React.createClass({
   render() {
     var editingObject = {};
     if (this.state.selectedFrame && this.state.selectedFile) {
-      editingObject = this.state.selectedFrame.files[this.state.selectedFile.path];
+      editingObject = this.state.selectedFrame.files[this.state.selectedFile.path] || {};
     }
 
     return (
