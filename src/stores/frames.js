@@ -102,6 +102,15 @@ var handleFileNameChange = function(oldPath, newName) {
   change();
 };
 
+var handleAnimationNameChange = function(oldName, newName) {
+  _frames.forEach(frame => {
+    if (frame.animation === oldName) {
+      frame.animation = newName;
+    }
+  });
+  change();
+};
+
 var togglePlaying = function() {
   _isPlaying = !_isPlaying;
   if (_isPlaying) {
@@ -173,6 +182,10 @@ appDispatcher.register(payload => {
     case eventConstants.INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
       fileFrame.left++;
       change();
+      break;
+    case eventConstants.RENAME_ANIMATION:
+      appDispatcher.waitFor([animationStore.dispatchToken]);
+      handleAnimationNameChange(action.data.oldName, action.data.newName);
       break;
     case eventConstants.RENAME_FILE:
       appDispatcher.waitFor([fileStore.dispatchToken]);

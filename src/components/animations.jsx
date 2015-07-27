@@ -2,12 +2,14 @@ import React from'react';
 import animationStore from'../stores/animations';
 import animationActions from'../actions/animations';
 import _assign from'object-assign';
+import RenameModal from './rename-modal';
 
 var Animations = React.createClass({
   getInitialState() {
     return {
       animations: animationStore.getAnimations(),
-      selectedAnimation: animationStore.getSelectedAnimation()
+      selectedAnimation: animationStore.getSelectedAnimation(),
+      renaming: false
     };
   },
 
@@ -31,7 +33,7 @@ var Animations = React.createClass({
       var style = {
         backgroundColor: animation === this.state.selectedAnimation ? '#29516d' : undefined
       };
-      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)}>{animation}</div>;
+      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} onDoubleClick={this._handleAnimationDoubleClick}>{animation}</div>;
     });
 
     var style = _assign({}, this.props.style);
@@ -39,12 +41,26 @@ var Animations = React.createClass({
       <div style={style}>
         <div>Animations <a onClick={this._handleAddAnimation}>+</a></div>
         {animations}
+        {this.state.renaming ? <RenameModal value={this.state.selectedAnimation} onChange={this._handleAnimationNameChange}/> : null}
       </div>
     );
   },
 
   _handleAddAnimation() {
     animationActions.addAnimation();
+  },
+
+  _handleAnimationDoubleClick() {
+    this.setState({
+      renaming: true
+    });
+  },
+
+  _handleAnimationNameChange(newAnimationName) {
+    animationActions.renameAnimation(this.state.selectedAnimation, newAnimationName);
+    this.setState({
+      renaming: false
+    });
   },
 
   _handleSelectAnimation(animation) {

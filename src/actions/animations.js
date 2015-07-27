@@ -14,6 +14,16 @@ var animationActions = {
       actionType: events.SELECT_ANIMATION,
       data: animation
     });
+  },
+
+  renameAnimation(animation, newName) {
+    appDispatcher.handleAction({
+      actionType: events.RENAME_ANIMATION,
+      data: {
+        oldName: animation,
+        newName: newName
+      }
+    });
   }
 };
 
