@@ -1,4 +1,4 @@
-import events from 'events';
+import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
@@ -6,7 +6,7 @@ import appDispatcher from '../dispatcher/app-dispatcher';
 var _animations = [];
 var _selectedAnimation = null;
 
-var animationStore = _assign({}, events.prototype, {
+var animationStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
