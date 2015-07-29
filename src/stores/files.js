@@ -1,15 +1,15 @@
-import events from 'events';
+import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
 import fs from 'fs';
 
-console.log(events.prototype);
+console.log(EventEmitter.prototype);
 
 var _files = [];
 var _selectedFile = null;
 
-var fileStore = _assign({}, events.prototype, {
+var fileStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
