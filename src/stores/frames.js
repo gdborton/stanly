@@ -163,6 +163,23 @@ appDispatcher.register(payload => {
     case eventConstants.DELETE_ANIMATION:
       handleDeleteAnimation(action.data);
       break;
+    case eventConstants.DELETE_FRAME:
+      var selectedFrameIndex;
+      if (_selectedFrame === action.data) {
+        selectedFrameIndex = frameStore.getFramesForSelectedAnimation().indexOf(_selectedFrame);
+      }
+
+      _frames = _frames.filter(frame => {
+        return frame !== action.data;
+      });
+
+      if (selectedFrameIndex) {
+        var target = selectedFrameIndex === 0 ? 0 : selectedFrameIndex - 1;
+        _selectedFrame = frameStore.getFramesForSelectedAnimation()[target];
+      }
+
+      change();
+      break;
     case eventConstants.SELECT_FRAME:
       _selectedFrame = action.data;
       change();

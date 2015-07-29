@@ -23,6 +23,13 @@ var frameActions = {
     });
   },
 
+  deleteFrame(frame) {
+    appDispatcher.handleAction({
+      actionType: events.DELETE_FRAME,
+      data: frame
+    });
+  },
+
   incrementLeft() {
     appDispatcher.handleAction({
       actionType: events.INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME,

@@ -56,7 +56,10 @@ var Frames = React.createClass({
 
     return (
       <div style={styles.container}>
-        Frames: {this.state.frames.length} Animation Duration: {frameDuration}s <a onClick={this.handleNewFrameClick} >+</a> <a onClick={this.handleTogglePlayClick}>{this.state.isPlaying ? 'PAUSE' : 'PLAY'}</a>
+        Frames: {this.state.frames.length} Animation Duration: {frameDuration}s{' '}
+        <a onClick={this.handleNewFrameClick} >+</a>{' '}
+        <a onClick={this.handleDeleteFrameClick} >-</a>{' '}
+        <a onClick={this.handleTogglePlayClick}>{this.state.isPlaying ? 'PAUSE' : 'PLAY'}</a>
         <div>
           {frames}
         </div>
@@ -70,6 +73,10 @@ var Frames = React.createClass({
 
   handleNewFrameClick() {
     frameActions.addFrame();
+  },
+
+  handleDeleteFrameClick() {
+    frameActions.deleteFrame(this.state.selectedFrame);
   },
 
   handleTogglePlayClick() {
