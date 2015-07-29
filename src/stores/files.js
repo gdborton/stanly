@@ -4,6 +4,8 @@ import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
 import fs from 'fs';
 
+console.log(events.prototype);
+
 var _files = [];
 var _selectedFile = null;
 
