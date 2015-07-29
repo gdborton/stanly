@@ -1,4 +1,4 @@
-import events from 'events';
+import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
@@ -8,7 +8,7 @@ var _contextMenuItems = [];
 var _top = -1;
 var _left = -1;
 
-var contextMenuStore = _assign({}, events.prototype, {
+var contextMenuStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },

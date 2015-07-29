@@ -1,4 +1,4 @@
-import events from 'events';
+import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
@@ -7,7 +7,7 @@ var _changeCallback = null;
 var _originalValue = '';
 var _open = false;
 
-var renameModalStore = _assign({}, events.prototype, {
+var renameModalStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },

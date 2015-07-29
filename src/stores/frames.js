@@ -1,4 +1,4 @@
-import events from 'events';
+import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
@@ -10,7 +10,7 @@ var _selectedFrame = null;
 var _isPlaying = false;
 var _frameTimer = false;
 
-var frameStore = _assign({}, events.prototype, {
+var frameStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
     this.addListener(eventConstants.CHANGE, callback);
   },
