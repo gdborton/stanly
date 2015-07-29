@@ -24,6 +24,13 @@ var animationActions = {
         newName: newName
       }
     });
+  },
+
+  deleteAnimation(animation) {
+    appDispatcher.handleAction({
+      actionType: events.DELETE_ANIMATION,
+      data: animation
+    });
   }
 };
 

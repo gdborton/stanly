@@ -58,14 +58,21 @@ var Animations = React.createClass({
   },
 
   _handleContextMenu(animation, event) {
-    contextMenuActions.openContextMenu([{
-      display: 'Rename',
-      onClick: () => {
-        renameModalActions.open(this.state.selectedAnimation, (newValue) => {
-          animationActions.renameAnimation(this.state.selectedAnimation, newValue);
-        });
+    contextMenuActions.openContextMenu([
+      {
+        display: 'Rename',
+        onClick: () => {
+          renameModalActions.open(this.state.selectedAnimation, (newValue) => {
+            animationActions.renameAnimation(this.state.selectedAnimation, newValue);
+          });
+        }
+      }, {
+        display: 'Delete',
+        onClick: () => {
+          animationActions.deleteAnimation(this.state.selectedAnimation);
+        }
       }
-    }], event);
+    ], event);
   }
 });
 

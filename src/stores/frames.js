@@ -65,6 +65,14 @@ var handleAddFile = function(file) {
   });
 };
 
+var handleDeleteAnimation = function(animation) {
+  _frames = _frames.filter(frame => {
+    return frame.animation !== animation;
+  });
+
+  change();
+};
+
 var handleAddFrame = function() {
   var newFrame = {
     duration: 500,
@@ -108,6 +116,7 @@ var handleAnimationNameChange = function(oldName, newName) {
       frame.animation = newName;
     }
   });
+
   change();
 };
 
@@ -150,6 +159,9 @@ appDispatcher.register(payload => {
     case eventConstants.ADD_FRAME:
       handleAddFrame();
       change();
+      break;
+    case eventConstants.DELETE_ANIMATION:
+      handleDeleteAnimation(action.data);
       break;
     case eventConstants.SELECT_FRAME:
       _selectedFrame = action.data;

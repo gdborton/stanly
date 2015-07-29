@@ -33,12 +33,28 @@ animationStore.dispatchToken = appDispatcher.register((payload) => {
       _selectedAnimation = animation;
       animationStore.emit(eventConstants.CHANGE);
       break;
+    case eventConstants.DELETE_ANIMATION:
+      var index = _animations.indexOf(action.data);
+      if (index !== -1) {
+        _animations.splice(index, 1);
+
+        if (index === _animations.length) {
+          _selectedAnimation = _animations[_animations.length - 1];
+        } else {
+          _selectedAnimation = _animations[index];
+        }
+
+        animationStore.emit(eventConstants.CHANGE);
+      }
+
+      break;
     case eventConstants.RENAME_ANIMATION:
       var animationIndex = _animations.indexOf(action.data.oldName);
       _animations[animationIndex] = action.data.newName;
       if (_selectedAnimation = action.data.oldName) {
         _selectedAnimation = action.data.newName;
       }
+
       animationStore.emit(eventConstants.CHANGE);
       break;
     case eventConstants.SELECT_ANIMATION:
