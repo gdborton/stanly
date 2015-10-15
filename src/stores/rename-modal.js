@@ -47,6 +47,12 @@ appDispatcher.register(payload => {
       _open = false;
       _changeCallback = null;
       change();
+      break;
+    case eventConstants.RESET:
+      _changeCallback = null;
+      _originalValue = '';
+      _open = false;
+      break;
     default:
       return true;
   }

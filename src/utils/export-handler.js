@@ -14,7 +14,7 @@ var exportableStores = [frameStore, fileStore, canvasStore, animationStore];
 var exportName = 'spriteconfig.js';
 
 var exportHandler = {
-  attemptExport: debounce(() => {
+  buildExportObject() {
     var exportObject = {
       width: canvasStore.getWidth(),
       height: canvasStore.getHeight(),
@@ -53,7 +53,10 @@ var exportHandler = {
         return returnObj;
       });
     });
-
+    return exportObject;
+  },
+  attemptExport: debounce(() => {
+    var exportObject = exportHandler.buildExportObject();
     fs.writeFile(exportName, 'module.exports = ' + JSON.stringify(exportObject, null, 2));
   }, 3000),
 

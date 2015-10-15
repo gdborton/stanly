@@ -35,6 +35,10 @@ appDispatcher.register(payload => {
       _height = action.data;
       canvasStore.emit(eventConstants.CHANGE);
       break;
+    case eventConstants.RESET:
+      _width = 300;
+      _height = 300;
+      break;
     default:
       return true;
   }

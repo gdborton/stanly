@@ -55,6 +55,12 @@ appDispatcher.register(payload => {
       }
       change();
       break;
+    case eventConstants.RESET:
+      _open = false;
+      _contextMenuItems = [];
+      _top = -1;
+      _left = -1;
+      break;
     default:
       return true;
   }

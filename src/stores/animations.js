@@ -61,6 +61,10 @@ animationStore.dispatchToken = appDispatcher.register((payload) => {
       _selectedAnimation = action.data;
       animationStore.emit(eventConstants.CHANGE);
       break;
+    case eventConstants.RESET:
+      _animations = [];
+      _selectedAnimation = null;
+      break;
     default:
       return true;
   }

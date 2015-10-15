@@ -248,6 +248,12 @@ appDispatcher.register(payload => {
       _selectedFrame = frameStore.getFramesForSelectedAnimation()[0];
       change();
       break;
+    case eventConstants.RESET:
+      _frames = [];
+      _selectedFrame = null;
+      _isPlaying = false;
+      _frameTimer = false;
+      break;
     default:
       return true;
   }

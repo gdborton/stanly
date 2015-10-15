@@ -91,6 +91,10 @@ fileStore.dispatchToken = appDispatcher.register(payload => {
       });
 
       break;
+    case eventConstants.RESET:
+      _files = [];
+      _selectedFile = null;
+      break;
     default:
       return true;
   }
