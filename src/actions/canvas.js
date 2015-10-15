@@ -5,14 +5,14 @@ var canvasActions = {
   setHeight(height) {
     appDispatcher.handleAction({
       actionType: events.SET_CANVAS_HEIGHT,
-      data: height
+      data: parseInt(height)
     });
   },
 
   setWidth(width) {
     appDispatcher.handleAction({
       actionType: events.SET_CANVAS_WIDTH,
-      data: width
+      data: parseInt(width)
     });
   }
 };
