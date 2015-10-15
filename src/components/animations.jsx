@@ -1,5 +1,5 @@
 import React from'react';
-import animationStore from'../stores/animations';
+import editorStore from'../stores/editor';
 import animationActions from'../actions/animations';
 import _assign from'object-assign';
 import renameModalActions from '../actions/rename-modal';
@@ -9,25 +9,25 @@ import contextMenuActions from '../actions/context-menu';
 var Animations = React.createClass({
   getInitialState() {
     return {
-      animations: animationStore.getAnimations(),
-      selectedAnimation: animationStore.getSelectedAnimation(),
+      animations: editorStore.getAnimations(),
+      selectedAnimation: editorStore.getSelectedAnimation(),
       contextMenuOpen: false
     };
   },
 
-  _updateAnimationStoreState() {
+  _updateAnimations() {
     this.setState({
-      animations: animationStore.getAnimations(),
-      selectedAnimation: animationStore.getSelectedAnimation()
+      animations: editorStore.getAnimations(),
+      selectedAnimation: editorStore.getSelectedAnimation(),
     });
   },
 
   componentDidMount() {
-    animationStore.addChangeListener(this._updateAnimationStoreState);
+    editorStore.addChangeListener(this._updateAnimations);
   },
 
   componentWillUnmount() {
-    animationStore.removeChangeListener(this._updateAnimationStoreState);
+    editorStore.removeChangeListener(this._updateAnimations);
   },
 
   render() {

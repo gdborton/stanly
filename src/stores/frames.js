@@ -3,7 +3,7 @@ import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
 import fileStore from './files';
-import animationStore from './animations';
+import editorStore from './editor';
 
 var _frames = [];
 var _selectedFrame = null;
@@ -25,7 +25,7 @@ var frameStore = _assign({}, EventEmitter.prototype, {
 
   getFramesForSelectedAnimation() {
     return _frames.filter(frame => {
-      return frame.animation === animationStore.getSelectedAnimation();
+      return frame.animation === editorStore.getSelectedAnimation();
     });
   },
 
@@ -47,7 +47,7 @@ var handleAddFile = function(file) {
     _frames.push({
       duration: 500,
       files: {},
-      animation: animationStore.getSelectedAnimation()
+      animation: editorStore.getSelectedAnimation()
     });
     _selectedFrame = _frames[0];
   }
@@ -77,7 +77,7 @@ var handleAddFrame = function() {
   var newFrame = {
     duration: 500,
     files: {},
-    animation: animationStore.getSelectedAnimation()
+    animation: editorStore.getSelectedAnimation()
   };
   var _matchingFrames = _frames.filter(frame => {
     return frame.animation === newFrame.animation;
@@ -213,7 +213,7 @@ appDispatcher.register(payload => {
       change();
       break;
     case eventConstants.RENAME_ANIMATION:
-      appDispatcher.waitFor([animationStore.dispatchToken]);
+      appDispatcher.waitFor([editorStore.dispatchToken]);
       handleAnimationNameChange(action.data.oldName, action.data.newName);
       break;
     case eventConstants.RENAME_FILE:

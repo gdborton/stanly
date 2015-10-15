@@ -1,7 +1,6 @@
 import frameStore from '../stores/frames';
 import fileStore from '../stores/files';
 import editorStore from '../stores/editor';
-import animationStore from '../stores/animations';
 import debounce from 'debounce';
 
 import fileActions from '../actions/files';
@@ -10,7 +9,7 @@ import animationActions from '../actions/animations';
 import frameActions from '../actions/frames';
 import fs from 'fs';
 
-var exportableStores = [frameStore, fileStore, editorStore, animationStore];
+var exportableStores = [frameStore, fileStore, editorStore];
 var exportName = 'spriteconfig.js';
 
 var exportHandler = {
@@ -25,7 +24,7 @@ var exportHandler = {
       animations: {}
     };
 
-    animationStore.getAnimations().forEach(animation => {
+    editorStore.getAnimations().forEach(animation => {
       var animationFrames = frameStore.getFrames().filter(frame => {
         return frame.animation === animation;
       });

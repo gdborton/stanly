@@ -12,12 +12,16 @@ function editorDefaults() {
   }
 }
 
+function selectionDefaults() {
+  return {
+    selectedFile: null,
+    selectedFrame: null,
+    selectedAnimation: null
+  };
+}
+
 var editorValues = editorDefaults();
-var selections = {
-  selectedFile: null,
-  selectedFrame: null,
-  selectedAnimation: null
-};
+var selections = selectionDefaults();
 
 var editorStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
@@ -42,6 +46,14 @@ var editorStore = _assign({}, EventEmitter.prototype, {
 
   getSelectedFile() {
     return selections.selectedFile;
+  },
+
+  getAnimations() {
+    return Object.keys(editorValues.animations);
+  },
+
+  getSelectedAnimation() {
+    return selections.selectedAnimation;
   }
 });
 
@@ -90,7 +102,7 @@ function handleAddFile(newFile) {
   });
 };
 
-appDispatcher.register(payload => {
+editorStore.dispatchToken = appDispatcher.register(payload => {
   var action = payload.action;
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
@@ -100,6 +112,37 @@ appDispatcher.register(payload => {
       var animation = action.data ? action.data : 'Untitled ' + Object.keys(editorValues.animations).length;
       editorValues.animations[animation] = [];
       selections.selectedAnimation = animation;
+      change();
+      break;
+    case eventConstants.DELETE_ANIMATION:
+      var animations = Object.keys(editorValues.animations);
+      var index = animations.indexOf(action.data);
+
+      if (index !== -1) {
+        delete editorValues.animations[action.data];
+        animations.splice(index, 1);
+
+        if (index === animations.length) {
+          selections.selectedAnimation = animations[animations.length - 1];
+        } else {
+          selections.selectedAnimation = selections.animations[index];
+        }
+
+        change();
+      }
+
+      break;
+    case eventConstants.RENAME_ANIMATION:
+      editorValues.animations[action.data.newName] = editorValues.animations[action.data.oldName];
+      delete editorValues.animations[action.data.oldName];
+      if (selections.selectedAnimation = action.data.oldName) {
+        selections.selectedAnimation = action.data.newName;
+      }
+
+      change();
+      break;
+    case eventConstants.SELECT_ANIMATION:
+      selections.selectedAnimation = action.data;
       change();
       break;
     case eventConstants.SET_CANVAS_WIDTH:
@@ -112,6 +155,7 @@ appDispatcher.register(payload => {
       break;
     case eventConstants.RESET:
       editorValues = editorDefaults();
+      selections = selectionDefaults();
       change();
       break;
     default:
