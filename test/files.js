@@ -5,6 +5,7 @@ const expect = chai.expect;
 const fileStore = require('../src/stores/files');
 const fileActions = require('../src/actions/files');
 const contextlessActions = require('../src/actions/contextless');
+const files = require('./fixtures').files;
 
 describe('files', function() {
   afterEach(function() {
@@ -19,7 +20,6 @@ describe('files', function() {
   });
 
   describe('fileActions', function() {
-    var files = [{name: 'asdf1.png', path: './path/asdf1.png'}, {name: 'asdf2.png', path: './path/asdf2.png'}];
     describe('addFile', function() {
       it('should be defined', function() {
         expect(fileActions.addFile).to.be.a('function');
