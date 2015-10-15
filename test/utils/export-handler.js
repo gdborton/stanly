@@ -1,19 +1,53 @@
 require('babel/register');
 
-const exportHandler = require('../../src/utils/export-handler');
-const contextlessActions = require('../../src/actions/contextless');
+const fileActions = require('../../src/actions/files');
+const animationActions = require('../../src/actions/animations');
 const {expect} = require('chai');
+const {files, defaultFileFrameValue} = require('../fixtures');
+const contextlessActions = require('../../src/actions/contextless');
+const exportHandler = require('../../src/utils/export-handler');
 
 describe('Export Handler', function() {
   afterEach(function() {
     contextlessActions.resetStores();
   });
 
-  it('should have a default export object.', function() {
-    const exportObject = exportHandler.buildExportObject();
-    expect(exportObject.width).to.equal(300);
-    expect(exportObject.height).to.equal(300);
-    expect(exportObject.files).to.be.empty;
-    expect(exportObject.animations).to.deep.equal({});
+  describe('default export', function() {
+    it('should have a default export object.', function() {
+      const exportObject = exportHandler.buildExportObject();
+      expect(exportObject.width).to.equal(300);
+      expect(exportObject.height).to.equal(300);
+      expect(exportObject.files).to.be.empty;
+      expect(exportObject.animations).to.be.empty;
+    });
+  });
+
+  describe('manipulating data', function() {
+    it('should add a file to the export if one is added via the action creator.', function() {
+      fileActions.addFile(files[0].name, files[0].path);
+      const exportObject = exportHandler.buildExportObject();
+      expect(exportObject.files.length).to.equal(1);
+      expect(exportObject.files).to.include(files[0].name);
+    });
+
+    it('should add an animation to the export if one is added via the action creator.', function() {
+      let animationName = 'animation';
+      animationActions.addAnimation(animationName);
+      const exportObject = exportHandler.buildExportObject();
+      expect(Object.keys(exportObject.animations).length).to.equal(1);
+      expect(exportObject.animations).to.include.keys(animationName);
+    });
+
+    it('should add a file to all animations when one is added.', function() {
+      let animationName = 'animation';
+      animationActions.addAnimation(animationName);
+      fileActions.addFile(files[0].name, files[0].path);
+      const exportObject = exportHandler.buildExportObject();
+      var animation = exportObject.animations.animation;
+      expect(animation.length).to.equal(1);
+      expect(animation[0].duration).to.equal(500);
+      expect(animation[0].files).to.include.keys("0");
+      expect(animation[0].files["0"]).to.deep.equal(defaultFileFrameValue);
+    });
   });
 });
