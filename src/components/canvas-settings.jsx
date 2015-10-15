@@ -1,28 +1,28 @@
 import React  from 'react';
-import canvasStore  from '../stores/canvas';
+import editorStore  from '../stores/editor';
 import canvasActions  from '../actions/canvas';
 
 var CanvasSettings = React.createClass({
   getInitialState() {
     return {
-      canvasHeight: canvasStore.getHeight(),
-      canvasWidth: canvasStore.getWidth()
+      canvasHeight: editorStore.getHeight(),
+      canvasWidth: editorStore.getWidth()
     }
   },
 
-  _updateCanvasStoreState() {
+  _updateCanvas() {
     this.setState({
-      canvasHeight: canvasStore.getHeight(),
-      canvasWidth: canvasStore.getWidth()
+      canvasHeight: editorStore.getHeight(),
+      canvasWidth: editorStore.getWidth()
     });
   },
 
   componentDidMount() {
-    canvasStore.addChangeListener(this._updateCanvasStoreState);
+    editorStore.addChangeListener(this._updateCanvas);
   },
 
   componentWillUnmount() {
-    canvasStore.removeChangeListener(this._updateCanvasStoreState);
+    editorStore.removeChangeListener(this._updateCanvas);
   },
 
   render() {

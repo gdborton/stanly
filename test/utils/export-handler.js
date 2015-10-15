@@ -2,10 +2,12 @@ require('babel/register');
 
 const fileActions = require('../../src/actions/files');
 const animationActions = require('../../src/actions/animations');
+const canvasActions = require('../../src/actions/canvas');
 const {expect} = require('chai');
 const {files, defaultFileFrameValue} = require('../fixtures');
 const contextlessActions = require('../../src/actions/contextless');
 const exportHandler = require('../../src/utils/export-handler');
+const editorStore = require('../../src/stores/editor');
 
 describe('Export Handler', function() {
   afterEach(function() {
@@ -38,7 +40,8 @@ describe('Export Handler', function() {
       expect(exportObject.animations).to.include.keys(animationName);
     });
 
-    it('should add a file to all animations when one is added.', function() {
+    // file added first.
+    it('should add a file to all animations when one is added after an animation.', function() {
       let animationName = 'animation';
       animationActions.addAnimation(animationName);
       fileActions.addFile(files[0].name, files[0].path);
@@ -48,6 +51,41 @@ describe('Export Handler', function() {
       expect(animation[0].duration).to.equal(500);
       expect(animation[0].files).to.include.keys("0");
       expect(animation[0].files["0"]).to.deep.equal(defaultFileFrameValue);
+    });
+
+    /* This wasn't working before the refactor. // animation added first.
+    it('should add all files to new animations.', function() {
+      fileActions.addFile(files[0].name, files[0].path);
+      let animationName = 'animation';
+      animationActions.addAnimation(animationName);
+      const exportObject = exportHandler.buildExportObject();
+      var animation = exportObject.animations.animation;
+      expect(animation.length).to.equal(1);
+      expect(animation[0].duration).to.equal(500);
+      expect(animation[0].files).to.include.keys("0");
+      expect(animation[0].files["0"]).to.deep.equal(defaultFileFrameValue);
+    });
+    */
+
+    it('should match the editor state tree.', function() {
+      let animationName = 'animation';
+      animationActions.addAnimation(animationName);
+      fileActions.addFile(files[0].name, files[0].path);
+      const exportObject = exportHandler.buildExportObject();
+      var animation = exportObject.animations.animation;
+      expect(exportObject).to.deep.equal(editorStore.getSnapshot());
+    });
+
+    it('should update with the canvas width.', function() {
+      canvasActions.setWidth(500);
+      const exportObject = exportHandler.buildExportObject();
+      expect(exportObject.width).to.equal(500);
+    });
+
+    it('should update with the canvas height.', function() {
+      canvasActions.setHeight(500);
+      const exportObject = exportHandler.buildExportObject();
+      expect(exportObject.height).to.equal(500);
     });
   });
 });

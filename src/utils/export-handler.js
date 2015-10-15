@@ -1,6 +1,6 @@
 import frameStore from '../stores/frames';
 import fileStore from '../stores/files';
-import canvasStore from '../stores/canvas';
+import editorStore from '../stores/editor';
 import animationStore from '../stores/animations';
 import debounce from 'debounce';
 
@@ -10,14 +10,14 @@ import animationActions from '../actions/animations';
 import frameActions from '../actions/frames';
 import fs from 'fs';
 
-var exportableStores = [frameStore, fileStore, canvasStore, animationStore];
+var exportableStores = [frameStore, fileStore, editorStore, animationStore];
 var exportName = 'spriteconfig.js';
 
 var exportHandler = {
   buildExportObject() {
     var exportObject = {
-      width: canvasStore.getWidth(),
-      height: canvasStore.getHeight(),
+      width: editorStore.getWidth(),
+      height: editorStore.getHeight(),
       files: fileStore.getFiles().map(file => {
         return file.name;
       }),

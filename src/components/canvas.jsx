@@ -1,7 +1,7 @@
 import React from 'react';
 import frameStore from '../stores/frames';
 import canvasActions from '../actions/canvas';
-import canvasStore from '../stores/canvas';
+import editorStore from '../stores/editor';
 import _assign from 'object-assign';
 import fileStore from '../stores/files';
 
@@ -10,8 +10,8 @@ var Canvas = React.createClass({
     return {
       selectedFrame: frameStore.getSelectedFrame(),
       files: fileStore.getFiles(),
-      canvasHeight: canvasStore.getHeight(),
-      canvasWidth: canvasStore.getWidth()
+      canvasHeight: editorStore.getHeight(),
+      canvasWidth: editorStore.getWidth()
     }
   },
 
@@ -27,22 +27,22 @@ var Canvas = React.createClass({
     });
   },
 
-  _updateCanvasStoreState() {
+  _updateCanvas() {
     this.setState({
-      canvasHeight: canvasStore.getHeight(),
-      canvasWidth: canvasStore.getWidth()
+      canvasHeight: editorStore.getHeight(),
+      canvasWidth: editorStore.getWidth()
     });
   },
 
   componentDidMount() {
     frameStore.addChangeListener(this._updateFrameStoreState);
-    canvasStore.addChangeListener(this._updateCanvasStoreState);
+    editorStore.addChangeListener(this._updateCanvas);
     fileStore.addChangeListener(this._updateFileStoreState);
   },
 
   componentWillUnmount() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
-    canvasStore.removeChangeListener(this._updateCanvasStoreState);
+    editorStore.removeChangeListener(this._updateCanvas);
     fileStore.removeChangeListener(this._updateFileStoreState);
   },
 
