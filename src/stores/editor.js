@@ -4,7 +4,7 @@ import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
 import fs from 'fs';
 
-function editorDefaults() {
+function exportDefaults() {
   return {
     width: 300,
     height: 300,
@@ -13,16 +13,18 @@ function editorDefaults() {
   }
 }
 
-function selectionDefaults() {
+function stateDefaults() {
   return {
-    selectedFile: null,
-    selectedFrame: null,
-    selectedAnimation: null
+    selections: {
+      selectedFile: null,
+      selectedFrame: null,
+      selectedAnimation: null
+    }
   };
 }
 
-var editorValues = editorDefaults();
-var selections = selectionDefaults();
+var exportValues = exportDefaults();
+var state = stateDefaults();
 
 var editorStore = _assign({}, EventEmitter.prototype, {
   addChangeListener(callback) {
@@ -34,31 +36,31 @@ var editorStore = _assign({}, EventEmitter.prototype, {
   },
 
   getFiles() {
-    return editorValues.files;
+    return exportValues.files;
   },
 
   getSelectedFile() {
-    return selections.selectedFile;
+    return state.selections.selectedFile;
   },
 
   getWidth() {
-    return editorValues.width;
+    return exportValues.width;
   },
 
   getHeight() {
-    return editorValues.height;
+    return exportValues.height;
   },
 
   getSnapshot() {
-    return {...editorValues}
+    return {...exportValues}
   },
 
   getAnimations() {
-    return Object.keys(editorValues.animations);
+    return Object.keys(exportValues.animations);
   },
 
   getSelectedAnimation() {
-    return selections.selectedAnimation;
+    return state.selections.selectedAnimation;
   }
 });
 
@@ -68,29 +70,29 @@ var change = function() {
 
 function handleAddFile(newFile) {
   var fileIndex = 0;
-  var matchingFileExists = editorValues.files.filter(file => {
+  var matchingFileExists = exportValues.files.filter(file => {
     return file === newFile;
   }).length > 0;
 
   if (!matchingFileExists) {
-    if (!selections.selectedFile) {
-      selections.selectedFile = newFile;
+    if (!state.selections.selectedFile) {
+      state.selections.selectedFile = newFile;
     }
 
-    fileIndex = editorValues.files.push(newFile) - 1;
+    fileIndex = exportValues.files.push(newFile) - 1;
     change();
   }
 
-  Object.keys(editorValues.animations).forEach((animationName) => {
-    var frames = editorValues.animations[animationName];
+  Object.keys(exportValues.animations).forEach((animationName) => {
+    var frames = exportValues.animations[animationName];
     if (!frames.length) {
       frames.push({
         duration: 500,
         files: {}
       });
 
-      if (!selections.selectedFrame) {
-        selections.selectedFrame = frames[0];
+      if (!state.selections.selectedFrame) {
+        state.selections.selectedFrame = frames[0];
       }
     }
 
@@ -115,23 +117,23 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       handleAddFile(action.data);
       break;
     case eventConstants.SELECT_FILE_BY_NAME:
-      selections.selectedFile = action.data;
+      state.selections.selectedFile = action.data;
       change();
       break;
     case eventConstants.MOVE_SELECTED_FILE_DOWN:
-      fileIndex = editorValues.files.indexOf(selections.selectedFile);
-      if (fileIndex !== editorValues.files.length - 1) {
-        editorValues.files[fileIndex] = editorValues.files[fileIndex + 1];
-        editorValues.files[fileIndex + 1] = selections.selectedFile;
+      fileIndex = exportValues.files.indexOf(state.selections.selectedFile);
+      if (fileIndex !== exportValues.files.length - 1) {
+        exportValues.files[fileIndex] = exportValues.files[fileIndex + 1];
+        exportValues.files[fileIndex + 1] = state.selections.selectedFile;
         change();
       }
 
       break;
     case eventConstants.MOVE_SELECTED_FILE_UP:
-      fileIndex = editorValues.files.indexOf(selections.selectedFile);
+      fileIndex = exportValues.files.indexOf(state.selections.selectedFile);
       if (fileIndex !== 0) {
-        editorValues.files[fileIndex] = editorValues.files[fileIndex - 1];
-        editorValues.files[fileIndex - 1] = selections.selectedFile;
+        exportValues.files[fileIndex] = exportValues.files[fileIndex - 1];
+        exportValues.files[fileIndex - 1] = state.selections.selectedFile;
         change();
       }
 
@@ -139,10 +141,10 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
     case eventConstants.RENAME_FILE:
       fs.rename('./'+ action.data.oldName, './' + action.data.newName, err => {
         if (!err) {
-          var oldIndex = editorValues.files.indexOf(action.data.oldName);
-          editorValues.files[oldIndex] = action.data.newName;
-          if (selections.selectedFile === action.data.oldName) {
-            selections.selectedFile = action.data.newName;
+          var oldIndex = exportValues.files.indexOf(action.data.oldName);
+          exportValues.files[oldIndex] = action.data.newName;
+          if (state.selections.selectedFile === action.data.oldName) {
+            state.selections.selectedFile = action.data.newName;
           }
           change();
         }
@@ -150,23 +152,23 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
 
       break;
     case eventConstants.ADD_ANIMATION:
-      var animation = action.data ? action.data : 'Untitled ' + Object.keys(editorValues.animations).length;
-      editorValues.animations[animation] = [];
-      selections.selectedAnimation = animation;
+      var animation = action.data ? action.data : 'Untitled ' + Object.keys(exportValues.animations).length;
+      exportValues.animations[animation] = [];
+      state.selections.selectedAnimation = animation;
       change();
       break;
     case eventConstants.DELETE_ANIMATION:
-      var animations = Object.keys(editorValues.animations);
+      var animations = Object.keys(exportValues.animations);
       var index = animations.indexOf(action.data);
 
       if (index !== -1) {
-        delete editorValues.animations[action.data];
+        delete exportValues.animations[action.data];
         animations.splice(index, 1);
 
         if (index === animations.length) {
-          selections.selectedAnimation = animations[animations.length - 1];
+          state.selections.selectedAnimation = animations[animations.length - 1];
         } else {
-          selections.selectedAnimation = selections.animations[index];
+          state.selections.selectedAnimation = state.selections.animations[index];
         }
 
         change();
@@ -174,29 +176,29 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
 
       break;
     case eventConstants.RENAME_ANIMATION:
-      editorValues.animations[action.data.newName] = editorValues.animations[action.data.oldName];
-      delete editorValues.animations[action.data.oldName];
-      if (selections.selectedAnimation = action.data.oldName) {
-        selections.selectedAnimation = action.data.newName;
+      exportValues.animations[action.data.newName] = exportValues.animations[action.data.oldName];
+      delete exportValues.animations[action.data.oldName];
+      if (state.selections.selectedAnimation = action.data.oldName) {
+        state.selections.selectedAnimation = action.data.newName;
       }
 
       change();
       break;
     case eventConstants.SELECT_ANIMATION:
-      selections.selectedAnimation = action.data;
+      state.selections.selectedAnimation = action.data;
       change();
       break;
     case eventConstants.SET_CANVAS_WIDTH:
-      editorValues.width = action.data;
+      exportValues.width = action.data;
       change();
       break;
     case eventConstants.SET_CANVAS_HEIGHT:
-      editorValues.height = action.data;
+      exportValues.height = action.data;
       change();
       break;
     case eventConstants.RESET:
-      editorValues = editorDefaults();
-      selections = selectionDefaults();
+      exportValues = exportDefaults();
+      state.selections = stateDefaults();
       change();
       break;
     default:
