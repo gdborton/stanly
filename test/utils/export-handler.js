@@ -33,17 +33,27 @@ describe('Export Handler', function() {
       expect(exportObject.files).to.include(files[0].name);
     });
 
-    it('should add an animation to the export if one is added via the action creator.', function() {
+    describe('animations', function() {
       let animationName = 'animation';
-      animationActions.addAnimation(animationName);
-      const exportObject = exportHandler.buildExportObject();
-      expect(Object.keys(exportObject.animations).length).to.equal(1);
-      expect(exportObject.animations).to.include.keys(animationName);
+      beforeEach(animationActions.addAnimation.bind(this,animationName));
+
+      it('should add an animation to the export if one is added via the action creator.', function() {
+        const exportObject = exportHandler.buildExportObject();
+        expect(Object.keys(exportObject.animations).length).to.equal(1);
+        expect(exportObject.animations).to.include.keys(animationName);
+      });
+
+      it('should properly update a deleted animation.', function() {
+        animationActions.deleteAnimation(animationName);
+        const exportObject = exportHandler.buildExportObject();
+        expect(Object.keys(exportObject.animations).length).to.equal(0);
+        expect(exportObject.animations).to.not.include.keys(animationName);
+      });
     });
 
     // file added first.
     it('should add a file to all animations when one is added after an animation.', function() {
-      let animationName = 'animation';
+      const animationName = 'animation';
       animationActions.addAnimation(animationName);
       fileActions.addFile(files[0].name, files[0].path);
       const exportObject = exportHandler.buildExportObject();
@@ -88,7 +98,7 @@ describe('Export Handler', function() {
       const exportObject = exportHandler.buildExportObject();
       expect(exportObject.height).to.equal(500);
     });
-      
+
     it('should update the key of frames when files move.', function() {
       let animationName = 'animation';
       animationActions.addAnimation(animationName);
