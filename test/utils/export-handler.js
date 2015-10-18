@@ -9,6 +9,7 @@ const {files, defaultFileFrameValue} = require('../fixtures');
 const contextlessActions = require('../../src/actions/contextless');
 const exportHandler = require('../../src/utils/export-handler');
 const editorStore = require('../../src/stores/editor');
+const frameStore = require('../../src/stores/frames');
 
 describe('Export Handler', function() {
   afterEach(function() {
@@ -49,19 +50,48 @@ describe('Export Handler', function() {
         expect(Object.keys(exportObject.animations).length).to.equal(0);
         expect(exportObject.animations).to.not.include.keys(animationName);
       });
+
+      // file added first.
+      it('should add a file to all animations when one is added after an animation.', function() {
+        fileActions.addFile(files[0].name, files[0].path);
+        const exportObject = exportHandler.buildExportObject();
+        var animation = exportObject.animations.animation;
+        expect(animation.length).to.equal(1);
+        expect(animation[0].duration).to.equal(500);
+        expect(animation[0].files).to.include.keys("0");
+        expect(animation[0].files["0"]).to.deep.equal(defaultFileFrameValue);
+      });
     });
 
-    // file added first.
-    it('should add a file to all animations when one is added after an animation.', function() {
+    describe('frames', function() {
       const animationName = 'animation';
-      animationActions.addAnimation(animationName);
-      fileActions.addFile(files[0].name, files[0].path);
-      const exportObject = exportHandler.buildExportObject();
-      var animation = exportObject.animations.animation;
-      expect(animation.length).to.equal(1);
-      expect(animation[0].duration).to.equal(500);
-      expect(animation[0].files).to.include.keys("0");
-      expect(animation[0].files["0"]).to.deep.equal(defaultFileFrameValue);
+      const fileName = 'fileName';
+      let selectedFrame;
+      beforeEach(() => {
+        animationActions.addAnimation(animationName);
+        fileActions.addFile('fileName');
+        selectedFrame = frameStore.getSelectedFrame();
+      });
+
+      it('should duplicate the last frame of an animation when a new one is added.', function() {
+        frameActions.addFrame();
+        const exportObject = exportHandler.buildExportObject();
+        const animation = exportObject.animations.animation;
+        expect(animation[0]).to.deep.equal(animation[1]);
+      });
+
+      it('should correctly handle the deleting of a frame.', function() {
+        frameActions.deleteFrame(frameStore.getSelectedFrame());
+        const exportObject = exportHandler.buildExportObject();
+        const animation = exportObject.animations.animation;
+        expect(animation).to.be.empty;
+      });
+
+      it('should update with a frame\'s visibility.', function() {
+        frameActions.toggleFileVisibity();
+        const exportObject = exportHandler.buildExportObject();
+        expect(exportObject.animations.animation[0].files["0"].visible).to.equal(false);
+      });
     });
 
     /* This wasn't working before the refactor. // animation added first.

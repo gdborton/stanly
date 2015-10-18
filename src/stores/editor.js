@@ -15,6 +15,8 @@ function exportDefaults() {
 
 function stateDefaults() {
   return {
+    isPlaying: false,
+    frameTimer: false,
     selections: {
       selectedFile: null,
       selectedFrame: null,
