@@ -31,6 +31,7 @@ var change = function() {
 
 fileStore.dispatchToken = appDispatcher.register(payload => {
   var action = payload.action;
+  var fileIndex;
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
       var matchingFileExists = _files.filter(file => {
@@ -63,7 +64,7 @@ fileStore.dispatchToken = appDispatcher.register(payload => {
 
       break;
     case eventConstants.MOVE_SELECTED_FILE_DOWN:
-      var fileIndex = _files.indexOf(_selectedFile);
+      fileIndex = _files.indexOf(_selectedFile);
       if (fileIndex !== _files.length - 1) {
         _files[fileIndex] = _files[fileIndex + 1];
         _files[fileIndex + 1] = _selectedFile;
@@ -72,7 +73,7 @@ fileStore.dispatchToken = appDispatcher.register(payload => {
 
       break;
     case eventConstants.MOVE_SELECTED_FILE_UP:
-      var fileIndex = _files.indexOf(_selectedFile);
+      fileIndex = _files.indexOf(_selectedFile);
       if (fileIndex !== 0) {
         _files[fileIndex] = _files[fileIndex - 1];
         _files[fileIndex - 1] = _selectedFile;
