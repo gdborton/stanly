@@ -2,7 +2,6 @@ import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
-import fileStore from './files';
 import editorStore from './editor';
 
 var _frames = [];
@@ -53,13 +52,12 @@ var handleAddFile = function(file) {
   }
 
   _frames.forEach(frame => {
-    if (!frame.files[file.path]) {
-      frame.files[file.path] = {
+    if (!frame.files[file]) {
+      frame.files[file] = {
         top: 0,
         left: 0,
         rotation: 0,
-        visible: true,
-        filepath: file.path
+        visible: true
       }
     }
   });
@@ -85,14 +83,13 @@ var handleAddFrame = function() {
 
   var lastFrame = _matchingFrames.length ? _matchingFrames[_matchingFrames.length - 1] : _frames[_frames.length - 1];
 
-  fileStore.getFiles().forEach(file => {
-    var lastFileFrame = lastFrame.files[file.path];
-    newFrame.files[file.path] = {
+  editorStore.getFiles().forEach(file => {
+    var lastFileFrame = lastFrame.files[file];
+    newFrame.files[file] = {
       top: lastFileFrame.top,
       left: lastFileFrame.left,
       rotation: lastFileFrame.rotation,
-      visible: lastFileFrame.visible,
-      filepath: file.path
+      visible: lastFileFrame.visible
     }
   });
 
@@ -100,11 +97,10 @@ var handleAddFrame = function() {
   _selectedFrame = _frames[_frames.length - 1];
 };
 
-var handleFileNameChange = function(oldPath, newName) {
+var handleFileNameChange = function(oldName, newName) {
   _frames.forEach(frame => {
-    var newPath = oldPath.substring(0, oldPath.lastIndexOf('/') + 1) + newName;
-    frame.files[newPath] = frame.files[oldPath];
-    delete frame.files[oldPath];
+    frame.files[newName] = frame.files[oldName];
+    delete frame.files[oldName];
   });
 
   change();
@@ -147,8 +143,8 @@ var setupTimer = function() {
 
 appDispatcher.register(payload => {
   var action = payload.action;
-  if (_selectedFrame && _selectedFrame.files && fileStore.getSelectedFile()) {
-    var fileFrame = _selectedFrame.files[fileStore.getSelectedFile().path];
+  if (_selectedFrame && _selectedFrame.files && editorStore.getSelectedFile()) {
+    var fileFrame = _selectedFrame.files[editorStore.getSelectedFile()];
   }
 
   switch (action.actionType) {
@@ -217,8 +213,8 @@ appDispatcher.register(payload => {
       handleAnimationNameChange(action.data.oldName, action.data.newName);
       break;
     case eventConstants.RENAME_FILE:
-      appDispatcher.waitFor([fileStore.dispatchToken]);
-      handleFileNameChange(action.data.oldPath, action.data.newName);
+      appDispatcher.waitFor([editorStore.dispatchToken]);
+      handleFileNameChange(action.data.oldName, action.data.newName);
       break;
     case eventConstants.ROTATE_LEFT_FOR_SELECTED_FILE_FRAME:
       fileFrame.rotation--;

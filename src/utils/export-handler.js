@@ -1,5 +1,4 @@
 import frameStore from '../stores/frames';
-import fileStore from '../stores/files';
 import editorStore from '../stores/editor';
 import debounce from 'debounce';
 
@@ -9,7 +8,7 @@ import animationActions from '../actions/animations';
 import frameActions from '../actions/frames';
 import fs from 'fs';
 
-var exportableStores = [frameStore, fileStore, editorStore];
+var exportableStores = [frameStore, editorStore];
 var exportName = 'spriteconfig.js';
 
 var exportHandler = {
@@ -17,9 +16,7 @@ var exportHandler = {
     var exportObject = {
       width: editorStore.getWidth(),
       height: editorStore.getHeight(),
-      files: fileStore.getFiles().map(file => {
-        return file.name;
-      }),
+      files: editorStore.getFiles().map(file => { return file; }),
 
       animations: {}
     };
@@ -74,7 +71,7 @@ var exportHandler = {
           canvasActions.setWidth(importedData.width);
           canvasActions.setHeight(importedData.height);
           importedData.files.forEach(file => {
-            fileActions.addFile(file, process.cwd() + '/' + file);
+            fileActions.addFile(file);
           });
 
           Object.keys(importedData.animations).forEach(animationName => {
@@ -104,7 +101,7 @@ var exportHandler = {
         }
 
         filesThatNeedAdded.forEach(file => {
-          fileActions.addFile(file, process.cwd() + '/' + file);
+          fileActions.addFile(file);
         });
       });
     });

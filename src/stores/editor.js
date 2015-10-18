@@ -2,6 +2,7 @@ import {EventEmitter} from 'events';
 import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
+import fs from 'fs';
 
 function editorDefaults() {
   return {
@@ -32,6 +33,14 @@ var editorStore = _assign({}, EventEmitter.prototype, {
     this.removeListener(eventConstants.CHANGE, callback);
   },
 
+  getFiles() {
+    return editorValues.files;
+  },
+
+  getSelectedFile() {
+    return selections.selectedFile;
+  },
+
   getWidth() {
     return editorValues.width;
   },
@@ -42,10 +51,6 @@ var editorStore = _assign({}, EventEmitter.prototype, {
 
   getSnapshot() {
     return {...editorValues}
-  },
-
-  getSelectedFile() {
-    return selections.selectedFile;
   },
 
   getAnimations() {
@@ -64,7 +69,7 @@ var change = function() {
 function handleAddFile(newFile) {
   var fileIndex = 0;
   var matchingFileExists = editorValues.files.filter(file => {
-    return file.name === newFile.name;
+    return file === newFile;
   }).length > 0;
 
   if (!matchingFileExists) {
@@ -72,7 +77,7 @@ function handleAddFile(newFile) {
       selections.selectedFile = newFile;
     }
 
-    fileIndex = editorValues.files.push(newFile.name) - 1;
+    fileIndex = editorValues.files.push(newFile) - 1;
     change();
   }
 
@@ -104,9 +109,45 @@ function handleAddFile(newFile) {
 
 editorStore.dispatchToken = appDispatcher.register(payload => {
   var action = payload.action;
+  var fileIndex;
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
       handleAddFile(action.data);
+      break;
+    case eventConstants.SELECT_FILE_BY_NAME:
+      selections.selectedFile = action.data;
+      change();
+      break;
+    case eventConstants.MOVE_SELECTED_FILE_DOWN:
+      fileIndex = editorValues.files.indexOf(selections.selectedFile);
+      if (fileIndex !== editorValues.files.length - 1) {
+        editorValues.files[fileIndex] = editorValues.files[fileIndex + 1];
+        editorValues.files[fileIndex + 1] = selections.selectedFile;
+        change();
+      }
+
+      break;
+    case eventConstants.MOVE_SELECTED_FILE_UP:
+      fileIndex = editorValues.files.indexOf(selections.selectedFile);
+      if (fileIndex !== 0) {
+        editorValues.files[fileIndex] = editorValues.files[fileIndex - 1];
+        editorValues.files[fileIndex - 1] = selections.selectedFile;
+        change();
+      }
+
+      break;
+    case eventConstants.RENAME_FILE:
+      fs.rename('./'+ action.data.oldName, './' + action.data.newName, err => {
+        if (!err) {
+          var oldIndex = editorValues.files.indexOf(action.data.oldName);
+          editorValues.files[oldIndex] = action.data.newName;
+          if (selections.selectedFile === action.data.oldName) {
+            selections.selectedFile = action.data.newName;
+          }
+          change();
+        }
+      });
+
       break;
     case eventConstants.ADD_ANIMATION:
       var animation = action.data ? action.data : 'Untitled ' + Object.keys(editorValues.animations).length;

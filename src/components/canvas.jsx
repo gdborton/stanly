@@ -3,13 +3,12 @@ import frameStore from '../stores/frames';
 import canvasActions from '../actions/canvas';
 import editorStore from '../stores/editor';
 import _assign from 'object-assign';
-import fileStore from '../stores/files';
 
 var Canvas = React.createClass({
   getInitialState() {
     return {
       selectedFrame: frameStore.getSelectedFrame(),
-      files: fileStore.getFiles(),
+      files: editorStore.getFiles(),
       canvasHeight: editorStore.getHeight(),
       canvasWidth: editorStore.getWidth()
     }
@@ -21,9 +20,9 @@ var Canvas = React.createClass({
     });
   },
 
-  _updateFileStoreState() {
+  _updateFiles() {
     this.setState({
-      files: fileStore.getFiles()
+      files: editorStore.getFiles()
     });
   },
 
@@ -37,13 +36,13 @@ var Canvas = React.createClass({
   componentDidMount() {
     frameStore.addChangeListener(this._updateFrameStoreState);
     editorStore.addChangeListener(this._updateCanvas);
-    fileStore.addChangeListener(this._updateFileStoreState);
+    editorStore.addChangeListener(this._updateFiles);
   },
 
   componentWillUnmount() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
     editorStore.removeChangeListener(this._updateCanvas);
-    fileStore.removeChangeListener(this._updateFileStoreState);
+    editorStore.removeChangeListener(this._updateFiles);
   },
 
   render() {
@@ -69,7 +68,7 @@ var Canvas = React.createClass({
     var images = [];
     if (this.state.selectedFrame) {
       images = this.state.files.map((file) => {
-        var fileFrame = this.state.selectedFrame.files[file.path];
+        var fileFrame = this.state.selectedFrame.files[file];
         if (fileFrame && fileFrame.visible) {
           var imageStyle = _assign({}, style.image, {
             top: fileFrame.top,
@@ -77,7 +76,7 @@ var Canvas = React.createClass({
             transform: 'rotate(' + fileFrame.rotation + 'deg)'
           });
 
-          return <img style={imageStyle} src={file.path}/>
+          return <img style={imageStyle} src={process.cwd() + '/' + file}/>
         } else {
           return null;
         }

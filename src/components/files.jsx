@@ -1,5 +1,5 @@
 import React  from 'react';
-import fileStore  from '../stores/files';
+import editorStore  from '../stores/editor';
 import fileActions  from '../actions/files';
 import globalStyles  from '../global-styles';
 import _assign  from 'object-assign';
@@ -9,24 +9,24 @@ import contextMenuActions from '../actions/context-menu';
 var Files = React.createClass({
   getInitialState() {
     return {
-      files: fileStore.getFiles(),
-      selectedFile: fileStore.getSelectedFile()
+      files: editorStore.getFiles(),
+      selectedFile: editorStore.getSelectedFile()
     };
   },
 
-  _updateFileStoreState() {
+  _updateFiles() {
     this.setState({
-      files: fileStore.getFiles(),
-      selectedFile: fileStore.getSelectedFile()
+      files: editorStore.getFiles(),
+      selectedFile: editorStore.getSelectedFile()
     });
   },
 
   componentDidMount() {
-    fileStore.addChangeListener(this._updateFileStoreState);
+    editorStore.addChangeListener(this._updateFiles);
   },
 
   componentWillUnmount() {
-    fileStore.removeChangeListener(this._updateFileStoreState);
+    editorStore.removeChangeListener(this._updateFiles);
   },
 
   render() {
@@ -36,7 +36,7 @@ var Files = React.createClass({
         backgroundColor: this.state.selectedFile === file ? globalStyles.colors.selectedColor : undefined
       };
 
-      return <div style={style} onClick={this._handleSelectFile.bind(this, file)} onContextMenu={this._handleContextMenu.bind(this, file)}>{file.name}</div>
+      return <div style={style} onClick={this._handleSelectFile.bind(this, file)} onContextMenu={this._handleContextMenu.bind(this, file)}>{file}</div>
     });
 
     var style = _assign({}, this.props.style);
@@ -49,15 +49,15 @@ var Files = React.createClass({
   },
 
   _handleSelectFile(file) {
-    fileActions.selectFile(file);
+    fileActions.selectFileByName(file);
   },
 
   _handleContextMenu(file, event) {
-    fileActions.selectFile(file);
+    fileActions.selectFileByName(file);
     contextMenuActions.openContextMenu([{
       display: 'Rename',
       onClick: () => {
-        renameModalActions.open(file.name, fileActions.renameFile.bind(this, this.state.selectedFile));
+        renameModalActions.open(file, fileActions.renameFile.bind(this, this.state.selectedFile));
       }
     }], event);
   }

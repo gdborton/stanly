@@ -1,6 +1,6 @@
 import React from 'react';
 import frameStore from '../stores/frames';
-import fileStore from '../stores/files';
+import editorStore from '../stores/editor';
 import frameActions from '../actions/frames';
 import globalStyles from '../global-styles';
 
@@ -20,7 +20,7 @@ var FrameEditorPanel = React.createClass({
   getInitialState() {
     return {
       selectedFrame: frameStore.getSelectedFrame(),
-      selectedFile: fileStore.getSelectedFile()
+      selectedFile: editorStore.getSelectedFile()
     }
   },
 
@@ -30,31 +30,31 @@ var FrameEditorPanel = React.createClass({
     });
   },
 
-  _updateFileStoreState() {
+  _updateFiles() {
     this.setState({
-      selectedFile: fileStore.getSelectedFile()
+      selectedFile: editorStore.getSelectedFile()
     });
   },
 
   componentDidMount() {
     frameStore.addChangeListener(this._updateFrameStoreState);
-    fileStore.addChangeListener(this._updateFileStoreState);
+    editorStore.addChangeListener(this._updateFiles);
   },
 
   componentWillUnmount() {
     frameStore.removeChangeListener(this._updateFrameStoreState);
-    fileStore.removeChangeListener(this._updateFileStoreState);
+    editorStore.removeChangeListener(this._updateFiles);
   },
 
   render() {
     var editingObject = {};
     if (this.state.selectedFrame && this.state.selectedFile) {
-      editingObject = this.state.selectedFrame.files[this.state.selectedFile.path] || {};
+      editingObject = this.state.selectedFrame.files[this.state.selectedFile] || {};
     }
 
     return (
       <div style={styles.container}>
-        <div>{this.state.selectedFile ? this.state.selectedFile.name + '\'s' : ''} settings</div>
+        <div>{this.state.selectedFile ? this.state.selectedFile + '\'s' : ''} settings</div>
         top: <input value={editingObject.top} onChange={this._handleTopChange} />
         left: <input value={editingObject.left} onChange={this._handleLeftChange} />
         Rotation: <input value={editingObject.rotation} onChange={this._handleRotationChange} />

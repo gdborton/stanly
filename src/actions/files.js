@@ -2,31 +2,20 @@ import appDispatcher from '../dispatcher/app-dispatcher';
 import events from '../constants/events';
 
 var fileActions = {
-  addFile(fileName, filePath) {
+  addFile(fileName) {
     appDispatcher.handleAction({
       actionType: events.ADD_FILE,
-      data: {
-        name: fileName,
-        path: filePath
-      }
+      data: fileName
     });
   },
 
-  renameFile(file, newName) {
+  renameFile(oldName, newName) {
     appDispatcher.handleAction({
       actionType: events.RENAME_FILE,
       data: {
-        file: file,
         newName: newName,
-        oldPath: file.path
+        oldName: oldName
       }
-    });
-  },
-
-  selectFile(file) {
-    appDispatcher.handleAction({
-      actionType: events.SELECT_FILE,
-      data: file
     });
   },
 
