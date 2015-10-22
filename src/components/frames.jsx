@@ -12,7 +12,6 @@ var styles = {
 
 var Frames = React.createClass({
   getInitialState() {
-    var x = editorStore;
     return {
       frames: editorStore.getFramesForSelectedAnimation(),
       isPlaying: editorStore.getIsPlaying(),
