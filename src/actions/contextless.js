@@ -6,6 +6,13 @@ var contextlessActions = {
     appDispatcher.handleAction({
       actionType: events.RESET
     });
+  },
+
+  importState(state) {
+    appDispatcher.handleAction({
+      actionType: events.IMPORT_STATE,
+      data: state
+    });
   }
 };
 

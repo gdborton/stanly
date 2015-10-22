@@ -19,7 +19,8 @@ var FrameEditorPanel = React.createClass({
   getInitialState() {
     return {
       selectedFrame: editorStore.getSelectedFrame(),
-      selectedFile: editorStore.getSelectedFile()
+      selectedFile: editorStore.getSelectedFile(),
+      files: editorStore.getFiles()
     }
   },
 
@@ -31,7 +32,8 @@ var FrameEditorPanel = React.createClass({
 
   _updateFiles() {
     this.setState({
-      selectedFile: editorStore.getSelectedFile()
+      selectedFile: editorStore.getSelectedFile(),
+      files: editorStore.getFiles()
     });
   },
 
@@ -48,7 +50,7 @@ var FrameEditorPanel = React.createClass({
   render() {
     var editingObject = {};
     if (this.state.selectedFrame && this.state.selectedFile) {
-      editingObject = this.state.selectedFrame.files[this.state.selectedFile] || {};
+      editingObject = this.state.selectedFrame.files[this.state.files.indexOf(this.state.selectedFile)] || {};
     }
 
     return (

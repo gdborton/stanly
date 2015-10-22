@@ -66,8 +66,8 @@ var Canvas = React.createClass({
     };
     var images = [];
     if (this.state.selectedFrame) {
-      images = this.state.files.map((file) => {
-        var fileFrame = this.state.selectedFrame.files[file];
+      images = this.state.files.map((file, index) => {
+        var fileFrame = this.state.selectedFrame.files[index];
         if (fileFrame && fileFrame.visible) {
           var imageStyle = _assign({}, style.image, {
             top: fileFrame.top,

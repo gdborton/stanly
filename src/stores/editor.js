@@ -42,7 +42,7 @@ var editorStore = _assign({}, EventEmitter.prototype, {
   },
 
   getFramesForSelectedAnimation() {
-    return exportValues.animations[state.selections.selectedAnimation];
+    return exportValues.animations[state.selections.selectedAnimation] || [];
   },
 
   getSelectedFrame() {
@@ -166,10 +166,27 @@ var swapFrameFileLocations = (oldIndex, newIndex) => {
   });
 };
 
+var defaultFrame = () => {
+  let frame = {
+    duration: 500,
+    files: {}
+  };
+  editorStore.getFiles().forEach((file) => {
+    frame.files[file] = {
+      top: 0,
+      left: 0,
+      rotation: 0,
+      visible: true
+    }
+  });
+
+  return frame;
+};
+
 var handleAddFrame = () => {
   var selectedAnimation = exportValues.animations[state.selections.selectedAnimation];
   var lastFrameInAnimation = selectedAnimation[selectedAnimation.length - 1];
-  var newFrame = JSON.parse(JSON.stringify(lastFrameInAnimation));
+  var newFrame = lastFrameInAnimation ? JSON.parse(JSON.stringify(lastFrameInAnimation)) : defaultFrame();
   selectedAnimation.push(newFrame);
   state.selections.selectedFrame = newFrame;
 };
@@ -283,7 +300,7 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       change();
       break;
     case eventConstants.SET_DURATION_FOR_SELECTED_FRAME:
-      _selectedFrame.duration = action.data;
+      state.selections.selectedFrame.duration = action.data;
       change();
       break;
     case eventConstants.SET_VISIBILITY_FOR_SELECTED_FILE_FRAME:
@@ -345,9 +362,15 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       break;
     case eventConstants.RESET:
       exportValues = exportDefaults();
-      state.selections = stateDefaults();
+      state = stateDefaults();
       change();
       break;
+    case eventConstants.IMPORT_STATE:
+      exportValues = action.data;
+      state.selections.selectedFile = editorStore.getFiles()[0];
+      state.selections.selectedAnimation = editorStore.getAnimations()[0];
+      state.selections.selectedFrame = exportValues.animations[state.selections.selectedAnimation][0]
+      change();
     default:
       return true;
   }
