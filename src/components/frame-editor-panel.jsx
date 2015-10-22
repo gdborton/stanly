@@ -1,5 +1,4 @@
 import React from 'react';
-import frameStore from '../stores/frames';
 import editorStore from '../stores/editor';
 import frameActions from '../actions/frames';
 import globalStyles from '../global-styles';
@@ -19,14 +18,14 @@ var styles = {
 var FrameEditorPanel = React.createClass({
   getInitialState() {
     return {
-      selectedFrame: frameStore.getSelectedFrame(),
+      selectedFrame: editorStore.getSelectedFrame(),
       selectedFile: editorStore.getSelectedFile()
     }
   },
 
-  _updateFrameStoreState() {
+  _updateFrames() {
     this.setState({
-      selectedFrame: frameStore.getSelectedFrame()
+      selectedFrame: editorStore.getSelectedFrame()
     });
   },
 
@@ -37,12 +36,12 @@ var FrameEditorPanel = React.createClass({
   },
 
   componentDidMount() {
-    frameStore.addChangeListener(this._updateFrameStoreState);
+    editorStore.addChangeListener(this._updateFrames);
     editorStore.addChangeListener(this._updateFiles);
   },
 
   componentWillUnmount() {
-    frameStore.removeChangeListener(this._updateFrameStoreState);
+    editorStore.removeChangeListener(this._updateFrames);
     editorStore.removeChangeListener(this._updateFiles);
   },
 

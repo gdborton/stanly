@@ -1,4 +1,3 @@
-import frameStore from '../stores/frames';
 import editorStore from '../stores/editor';
 import debounce from 'debounce';
 
@@ -8,49 +7,14 @@ import animationActions from '../actions/animations';
 import frameActions from '../actions/frames';
 import fs from 'fs';
 
-var exportableStores = [frameStore, editorStore];
+var exportableStores = [editorStore];
 var exportName = 'spriteconfig.js';
 
 var exportHandler = {
   buildExportObject() {
-    var exportObject = {
-      width: editorStore.getWidth(),
-      height: editorStore.getHeight(),
-      files: editorStore.getFiles().map(file => { return file; }),
-
-      animations: {}
-    };
-
-    editorStore.getAnimations().forEach(animation => {
-      var animationFrames = frameStore.getFrames().filter(frame => {
-        return frame.animation === animation;
-      });
-
-      exportObject.animations[animation] = animationFrames.map(animation => {
-        var returnObj = {
-          duration: animation.duration,
-          files: {}
-        };
-
-        Object.keys(animation.files).forEach(filePath => {
-          var animationFileFrame = animation.files[filePath];
-          var fileIndex = exportObject.files.indexOf(exportObject.files.filter(file => {
-            return file === filePath.split('/').pop();
-          })[0]);
-
-          returnObj.files[fileIndex] = {
-            top: animationFileFrame.top,
-            left: animationFileFrame.left,
-            rotation: animationFileFrame.rotation,
-            visible: animationFileFrame.visible
-          };
-        });
-
-        return returnObj;
-      });
-    });
-    return exportObject;
+    return editorStore.getExportObject();
   },
+
   attemptExport: debounce(() => {
     var exportObject = exportHandler.buildExportObject();
     fs.writeFile(exportName, 'module.exports = ' + JSON.stringify(exportObject, null, 2));

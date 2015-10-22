@@ -1,5 +1,4 @@
 import React from 'react';
-import frameStore from '../stores/frames';
 import canvasActions from '../actions/canvas';
 import editorStore from '../stores/editor';
 import _assign from 'object-assign';
@@ -7,16 +6,16 @@ import _assign from 'object-assign';
 var Canvas = React.createClass({
   getInitialState() {
     return {
-      selectedFrame: frameStore.getSelectedFrame(),
+      selectedFrame: editorStore.getSelectedFrame(),
       files: editorStore.getFiles(),
       canvasHeight: editorStore.getHeight(),
       canvasWidth: editorStore.getWidth()
     }
   },
 
-  _updateFrameStoreState() {
+  _updateFrames() {
     this.setState({
-      selectedFrame: frameStore.getSelectedFrame()
+      selectedFrame: editorStore.getSelectedFrame()
     });
   },
 
@@ -34,13 +33,13 @@ var Canvas = React.createClass({
   },
 
   componentDidMount() {
-    frameStore.addChangeListener(this._updateFrameStoreState);
+    editorStore.addChangeListener(this._updateFrames);
     editorStore.addChangeListener(this._updateCanvas);
     editorStore.addChangeListener(this._updateFiles);
   },
 
   componentWillUnmount() {
-    frameStore.removeChangeListener(this._updateFrameStoreState);
+    editorStore.removeChangeListener(this._updateFrames);
     editorStore.removeChangeListener(this._updateCanvas);
     editorStore.removeChangeListener(this._updateFiles);
   },

@@ -1,5 +1,5 @@
 import React from 'react';
-import frameStore from '../stores/frames';
+import editorStore from '../stores/editor';
 import globalStyles from '../global-styles';
 import frameActions from '../actions/frames';
 
@@ -13,26 +13,26 @@ var styles = {
 var Frames = React.createClass({
   getInitialState() {
     return {
-      frames: frameStore.getFramesForSelectedAnimation(),
-      isPlaying: frameStore.getIsPlaying(),
-      selectedFrame: frameStore.getSelectedFrame()
+      frames: editorStore.getFramesForSelectedAnimation(),
+      isPlaying: editorStore.getIsPlaying(),
+      selectedFrame: editorStore.getSelectedFrame()
     };
   },
 
-  _updateFrameStoreState() {
+  _updateFrames() {
     this.setState({
-      frames: frameStore.getFramesForSelectedAnimation(),
-      isPlaying: frameStore.getIsPlaying(),
-      selectedFrame: frameStore.getSelectedFrame()
+      frames: editorStore.getFramesForSelectedAnimation(),
+      isPlaying: editorStore.getIsPlaying(),
+      selectedFrame: editorStore.getSelectedFrame()
     });
   },
 
   componentDidMount() {
-    frameStore.addChangeListener(this._updateFrameStoreState);
+    editorStore.addChangeListener(this._updateFrames);
   },
 
   componentWillUnmount() {
-    frameStore.removeChangeListener(this._updateFrameStoreState);
+    editorStore.removeChangeListener(this._updateFrames);
   },
 
   render() {

@@ -9,7 +9,6 @@ const {files, defaultFileFrameValue} = require('../fixtures');
 const contextlessActions = require('../../src/actions/contextless');
 const exportHandler = require('../../src/utils/export-handler');
 const editorStore = require('../../src/stores/editor');
-const frameStore = require('../../src/stores/frames');
 
 describe('Export Handler', function() {
   afterEach(function() {
@@ -70,7 +69,7 @@ describe('Export Handler', function() {
       beforeEach(() => {
         animationActions.addAnimation(animationName);
         fileActions.addFile('fileName');
-        selectedFrame = frameStore.getSelectedFrame();
+        selectedFrame = editorStore.getSelectedFrame();
       });
 
       it('should duplicate the last frame of an animation when a new one is added.', function() {
@@ -81,7 +80,7 @@ describe('Export Handler', function() {
       });
 
       it('should correctly handle the deleting of a frame.', function() {
-        frameActions.deleteFrame(frameStore.getSelectedFrame());
+        frameActions.deleteFrame(editorStore.getSelectedFrame());
         const exportObject = exportHandler.buildExportObject();
         const animation = exportObject.animations.animation;
         expect(animation).to.be.empty;

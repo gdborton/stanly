@@ -37,6 +37,18 @@ var editorStore = _assign({}, EventEmitter.prototype, {
     this.removeListener(eventConstants.CHANGE, callback);
   },
 
+  getIsPlaying() {
+    return state.isPlaying;
+  },
+
+  getFramesForSelectedAnimation() {
+    return exportValues.animations[state.selections.selectedAnimation];
+  },
+
+  getSelectedFrame() {
+    return state.selections.selectedFrame;
+  },
+
   getFiles() {
     return exportValues.files;
   },
@@ -61,8 +73,16 @@ var editorStore = _assign({}, EventEmitter.prototype, {
     return Object.keys(exportValues.animations);
   },
 
+  getFramesForAnimation(animation) {
+    return exportValues.animations[animation];
+  },
+
   getSelectedAnimation() {
     return state.selections.selectedAnimation;
+  },
+
+  getExportObject() {
+    return exportValues;
   }
 });
 
@@ -111,9 +131,56 @@ function handleAddFile(newFile) {
   });
 };
 
+var togglePlaying = function() {
+  state.isPlaying = !state.isPlaying;
+  if (state.isPlaying) {
+    setupTimer();
+  } else {
+    clearInterval(state.frameTimer);
+  }
+};
+
+var setupTimer = function() {
+  var frames = editorStore.getFramesForSelectedAnimation();
+
+  state.frameTimer = setTimeout(() => {
+    var selectedFrameIndex = frames.indexOf(state.selections.selectedFrame);
+    if (selectedFrameIndex === frames.length - 1) {
+      state.selections.selectedFrame = frames[0];
+    } else {
+      state.selections.selectedFrame = frames[selectedFrameIndex + 1];
+    }
+
+    change();
+    setupTimer();
+  }, state.selections.selectedFrame.duration);
+};
+
+var swapFrameFileLocations = (oldIndex, newIndex) => {
+  Object.keys(exportValues.animations).forEach((animation) => {
+    exportValues.animations[animation].forEach((frame) => {
+      var firstValue = frame.files[oldIndex];
+      frame.files[oldIndex] = frame.files[newIndex];
+      frame.files[newIndex] = firstValue;
+    });
+  });
+};
+
+var handleAddFrame = () => {
+  var selectedAnimation = exportValues.animations[state.selections.selectedAnimation];
+  var lastFrameInAnimation = selectedAnimation[selectedAnimation.length - 1];
+  var newFrame = JSON.parse(JSON.stringify(lastFrameInAnimation));
+  selectedAnimation.push(newFrame);
+  state.selections.selectedFrame = newFrame;
+};
+
 editorStore.dispatchToken = appDispatcher.register(payload => {
   var action = payload.action;
   var fileIndex;
+  if (state.selections.selectedFrame && state.selections.selectedFrame.files && editorStore.getSelectedFile()) {
+    var fileFrame = state.selections.selectedFrame.files[exportValues.files.indexOf(editorStore.getSelectedFile())];
+  }
+
   switch (action.actionType) {
     case eventConstants.ADD_FILE:
       handleAddFile(action.data);
@@ -127,6 +194,7 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       if (fileIndex !== exportValues.files.length - 1) {
         exportValues.files[fileIndex] = exportValues.files[fileIndex + 1];
         exportValues.files[fileIndex + 1] = state.selections.selectedFile;
+        swapFrameFileLocations(fileIndex, fileIndex + 1);
         change();
       }
 
@@ -136,6 +204,7 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       if (fileIndex !== 0) {
         exportValues.files[fileIndex] = exportValues.files[fileIndex - 1];
         exportValues.files[fileIndex - 1] = state.selections.selectedFile;
+        swapFrameFileLocations(fileIndex, fileIndex - 1);
         change();
       }
 
@@ -159,11 +228,78 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       state.selections.selectedAnimation = animation;
       change();
       break;
+    case eventConstants.ADD_FRAME:
+      handleAddFrame();
+      change();
+      break;
+    case eventConstants.DELETE_FRAME:
+      var animation = exportValues.animations[state.selections.selectedAnimation];
+      exportValues.animations[state.selections.selectedAnimation] = animation.filter((frame)=> {
+        return frame !== action.data;
+      });
+      if (state.selections.selectedFrame === action.data) {
+        state.selections.selectedFrame = animation[animation.length - 1];
+      }
+      change();
+      break;
+    case eventConstants.SELECT_FRAME:
+      state.selections.selectedFrame = action.data;
+      change();
+      break;
+    case eventConstants.SET_LEFT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.left = parseInt(action.data) || 0;
+      change();
+      break;
+    case eventConstants.SET_ROTATION_FOR_SELECTED_FILE_FRAME:
+      fileFrame.rotation = parseInt(action.data) || 0;
+      change();
+      break;
+    case eventConstants.SET_TOP_FOR_SELECTED_FILE_FRAME:
+      fileFrame.top = parseInt(action.data) || 0;
+      change();
+      break;
+    case eventConstants.DECREMENT_TOP_FOR_SELECTED_FILE_FRAME:
+      fileFrame.top--;
+      change();
+      break;
+    case eventConstants.INCREMENT_TOP_FOR_SELECTED_FILE_FRAME:
+      fileFrame.top++;
+      change();
+      break;
+    case eventConstants.DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.left--;
+      change();
+      break;
+    case eventConstants.INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.left++;
+      change();
+      break;
+    case eventConstants.ROTATE_LEFT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.rotation--;
+      change();
+      break;
+    case eventConstants.ROTATE_RIGHT_FOR_SELECTED_FILE_FRAME:
+      fileFrame.rotation++;
+      change();
+      break;
+    case eventConstants.SET_DURATION_FOR_SELECTED_FRAME:
+      _selectedFrame.duration = action.data;
+      change();
+      break;
+    case eventConstants.SET_VISIBILITY_FOR_SELECTED_FILE_FRAME:
+      fileFrame.visible = action.data;
+      change();
+      break;
+    case eventConstants.TOGGLE_VISIBILITY_FOR_SELECTED_FILE_FRAME:
+      fileFrame.visible = !fileFrame.visible;
+      change();
+      break;
     case eventConstants.DELETE_ANIMATION:
       var animations = Object.keys(exportValues.animations);
       var index = animations.indexOf(action.data);
 
       if (index !== -1) {
+        let containsSelectedFrame = exportValues.animations[action.data].indexOf(state.selections.selectedFrame) !== -1;
         delete exportValues.animations[action.data];
         animations.splice(index, 1);
 
@@ -173,9 +309,17 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
           state.selections.selectedAnimation = state.selections.animations[index];
         }
 
+        if (containsSelectedFrame) {
+          state.selections.selectedFrame = exportValues.animations[state.selections.selectedAnimation][0];
+        }
+
         change();
       }
 
+      break;
+    case eventConstants.TOGGLE_PLAYING:
+      togglePlaying();
+      change();
       break;
     case eventConstants.RENAME_ANIMATION:
       exportValues.animations[action.data.newName] = exportValues.animations[action.data.oldName];
@@ -188,6 +332,7 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       break;
     case eventConstants.SELECT_ANIMATION:
       state.selections.selectedAnimation = action.data;
+      state.selections.selectedFrame = editorStore.getFramesForSelectedAnimation()[0];
       change();
       break;
     case eventConstants.SET_CANVAS_WIDTH:

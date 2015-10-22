@@ -1,7 +1,7 @@
 require('babel/register');
 const {expect} = require('chai');
 const frameActions = require('../../src/actions/frames');
-const frameStore = require('../../src/stores/frames');
+const editorStore = require('../../src/stores/editor');
 const fileActions = require('../../src/actions/files');
 const animationActions = require('../../src/actions/animations');
 const contextlessActions = require('../../src/actions/contextless');
@@ -17,11 +17,11 @@ describe('Frame Actions', function() {
       const animation = 'animation';
       animationActions.addAnimation(animation);
       fileActions.addFile(files[0].name);
-      expect(frameStore.getIsPlaying()).to.equal(false);
+      expect(editorStore.getIsPlaying()).to.equal(false);
       frameActions.togglePlaying();
-      expect(frameStore.getIsPlaying()).to.equal(true);
+      expect(editorStore.getIsPlaying()).to.equal(true);
       frameActions.togglePlaying();
-      expect(frameStore.getIsPlaying()).to.equal(false);
+      expect(editorStore.getIsPlaying()).to.equal(false);
     });
   });
 });
