@@ -75,7 +75,7 @@ var Canvas = React.createClass({
             transform: 'rotate(' + fileFrame.rotation + 'deg)'
           });
 
-          return <img style={imageStyle} src={process.cwd() + '/' + file}/>
+          return <img style={imageStyle} key={file} src={process.cwd() + '/' + file}/>
         } else {
           return null;
         }

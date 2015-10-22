@@ -31,12 +31,12 @@ var Animations = React.createClass({
   },
 
   render() {
-    var animations = this.state.animations.map((animation) => {
+    var animations = this.state.animations.map(animation => {
       var style = {
         backgroundColor: animation === this.state.selectedAnimation ? '#29516d' : undefined
       };
 
-      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} onContextMenu={this._handleContextMenu.bind(this, animation)}>{animation}</div>;
+      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} key={animation} onContextMenu={this._handleContextMenu.bind(this, animation)}>{animation}</div>;
     });
 
     var style = _assign({}, this.props.style);

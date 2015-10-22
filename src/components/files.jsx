@@ -36,7 +36,7 @@ var Files = React.createClass({
         backgroundColor: this.state.selectedFile === file ? globalStyles.colors.selectedColor : undefined
       };
 
-      return <div style={style} onClick={this._handleSelectFile.bind(this, file)} onContextMenu={this._handleContextMenu.bind(this, file)}>{file}</div>
+      return <div style={style} key={file} onClick={this._handleSelectFile.bind(this, file)} onContextMenu={this._handleContextMenu.bind(this, file)}>{file}</div>
     });
 
     var style = _assign({}, this.props.style);
