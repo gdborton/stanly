@@ -4,6 +4,7 @@ import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
 import fs from 'fs';
 import reduxStore from './redux';
+import {recursive} from 'merge';
 
 function exportDefaults() {
   return {
@@ -91,47 +92,6 @@ var change = function() {
   editorStore.emit(eventConstants.CHANGE);
 };
 
-function handleAddFile(newFile) {
-  var fileIndex = 0;
-  var matchingFileExists = exportValues.files.filter(file => {
-    return file === newFile;
-  }).length > 0;
-
-  if (!matchingFileExists) {
-    if (!state.selections.selectedFile) {
-      state.selections.selectedFile = newFile;
-    }
-
-    fileIndex = exportValues.files.push(newFile) - 1;
-    change();
-  }
-
-  Object.keys(exportValues.animations).forEach((animationName) => {
-    var frames = exportValues.animations[animationName];
-    if (!frames.length) {
-      frames.push({
-        duration: 500,
-        files: {}
-      });
-
-      if (!state.selections.selectedFrame) {
-        state.selections.selectedFrame = frames[0];
-      }
-    }
-
-    frames.forEach(frame => {
-      if (!frame.files[fileIndex]) {
-        frame.files[fileIndex] = {
-          top: 0,
-          left: 0,
-          rotation: 0,
-          visible: true
-        }
-      }
-    });
-  });
-};
-
 var togglePlaying = function() {
   state.isPlaying = !state.isPlaying;
   if (state.isPlaying) {
@@ -154,17 +114,7 @@ var setupTimer = function() {
 
     change();
     setupTimer();
-  }, state.selections.selectedFrame.duration);
-};
-
-var swapFrameFileLocations = (oldIndex, newIndex) => {
-  Object.keys(exportValues.animations).forEach((animation) => {
-    exportValues.animations[animation].forEach((frame) => {
-      var firstValue = frame.files[oldIndex];
-      frame.files[oldIndex] = frame.files[newIndex];
-      frame.files[newIndex] = firstValue;
-    });
-  });
+  }, editorStore.getSelectedFrame().duration);
 };
 
 var defaultFrame = () => {
@@ -200,52 +150,6 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
   }
 
   switch (action.actionType) {
-    case eventConstants.ADD_FILE:
-      handleAddFile(action.data);
-      break;
-    case eventConstants.SELECT_FILE_BY_NAME:
-      state.selections.selectedFile = action.data;
-      change();
-      break;
-    case eventConstants.MOVE_SELECTED_FILE_DOWN:
-      fileIndex = exportValues.files.indexOf(state.selections.selectedFile);
-      if (fileIndex !== exportValues.files.length - 1) {
-        exportValues.files[fileIndex] = exportValues.files[fileIndex + 1];
-        exportValues.files[fileIndex + 1] = state.selections.selectedFile;
-        swapFrameFileLocations(fileIndex, fileIndex + 1);
-        change();
-      }
-
-      break;
-    case eventConstants.MOVE_SELECTED_FILE_UP:
-      fileIndex = exportValues.files.indexOf(state.selections.selectedFile);
-      if (fileIndex !== 0) {
-        exportValues.files[fileIndex] = exportValues.files[fileIndex - 1];
-        exportValues.files[fileIndex - 1] = state.selections.selectedFile;
-        swapFrameFileLocations(fileIndex, fileIndex - 1);
-        change();
-      }
-
-      break;
-    case eventConstants.RENAME_FILE:
-      fs.rename('./'+ action.data.oldName, './' + action.data.newName, err => {
-        if (!err) {
-          var oldIndex = exportValues.files.indexOf(action.data.oldName);
-          exportValues.files[oldIndex] = action.data.newName;
-          if (state.selections.selectedFile === action.data.oldName) {
-            state.selections.selectedFile = action.data.newName;
-          }
-          change();
-        }
-      });
-
-      break;
-    case eventConstants.ADD_ANIMATION:
-      var animation = action.data ? action.data : 'Untitled ' + Object.keys(exportValues.animations).length;
-      exportValues.animations[animation] = [];
-      state.selections.selectedAnimation = animation;
-      change();
-      break;
     case eventConstants.ADD_FRAME:
       handleAddFrame();
       change();
@@ -370,7 +274,10 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
 });
 
 reduxStore.subscribe(() => {
-  exportValues = {...exportValues, ...reduxStore.getState()};
+  let reduxState = reduxStore.getState();
+  exportValues = recursive(exportValues, reduxState.exportValues);
+  state.selections = {...state.selections, ...reduxState.selections};
+  change();
 });
 
 export default editorStore;

@@ -1,43 +1,66 @@
 import appDispatcher from '../dispatcher/app-dispatcher';
 import events from '../constants/events';
+import {dispatch} from '../stores/redux';
+import frameActions from './frames';
+import editorStore from '../stores/editor';
+
+function addFile(fileName) {
+  return {
+    type: events.ADD_FILE,
+    fileName
+  };
+};
+
+function renameFile(oldName, newName) {
+  return {
+    type: events.RENAME_FILE,
+    oldName, newName
+  };
+};
+
+function selectFileByName(fileName) {
+  return {
+    type: events.SELECT_FILE_BY_NAME,
+    fileName
+  };
+}
+
+function moveSelectedFileUp() {
+  return {
+    type: events.MOVE_SELECTED_FILE_UP
+  };
+}
+
+function moveSelectedFileDown() {
+  return {
+    type: events.MOVE_SELECTED_FILE_DOWN
+  };
+}
 
 var fileActions = {
   addFile(fileName) {
-    appDispatcher.handleAction({
-      actionType: events.ADD_FILE,
-      data: fileName
-    });
+    dispatch(addFile(fileName));
+    dispatch(selectFileByName(fileName));
+    if (!editorStore.getSelectedFrame()) {
+      let frame = editorStore.getExportObject().animations[editorStore.getSelectedAnimation()];
+      frameActions.selectFrame(frame);
+    }
   },
 
   renameFile(oldName, newName) {
-    appDispatcher.handleAction({
-      actionType: events.RENAME_FILE,
-      data: {
-        newName: newName,
-        oldName: oldName
-      }
-    });
+    dispatch(renameFile(oldName, newName));
   },
 
   selectFileByName(fileName) {
-    appDispatcher.handleAction({
-      actionType: events.SELECT_FILE_BY_NAME,
-      data: fileName
-    });
+    dispatch(selectFileByName(fileName));
   },
 
   moveSelectedFileUp() {
-    appDispatcher.handleAction({
-      actionType: events.MOVE_SELECTED_FILE_UP,
-      data: null
-    });
+    dispatch(moveSelectedFileUp());
   },
 
   moveSelectedFileDown() {
-    appDispatcher.handleAction({
-      actionType: events.MOVE_SELECTED_FILE_DOWN,
-      data: null
-    });
+    dispatch(moveSelectedFileDown());
   }
 };
 

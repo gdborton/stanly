@@ -1,4 +1,3 @@
-import appDispatcher from '../dispatcher/app-dispatcher';
 import events from'../constants/events';
 import {dispatch} from '../stores/redux';
 

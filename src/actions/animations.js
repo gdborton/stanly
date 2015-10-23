@@ -1,19 +1,29 @@
 import appDispatcher from '../dispatcher/app-dispatcher';
 import events from '../constants/events';
+import {dispatch} from '../stores/redux';
+
+function addAnimation(animationName) {
+  return {
+    type: events.ADD_ANIMATION,
+    animationName
+  };
+}
+
+function selectAnimation(animationName) {
+  return {
+    type: events.SELECT_ANIMATION,
+    animationName
+  }
+};
 
 var animationActions = {
   addAnimation(animationName) {
-    appDispatcher.handleAction({
-      actionType: events.ADD_ANIMATION,
-      data: animationName
-    });
+    dispatch(addAnimation(animationName));
+    dispatch(selectAnimation(animationName));
   },
 
-  selectAnimation(animation) {
-    appDispatcher.handleAction({
-      actionType: events.SELECT_ANIMATION,
-      data: animation
-    });
+  selectAnimation(animationName) {
+    dispatch(selectAnimation(animationName));
   },
 
   renameAnimation(animation, newName) {
