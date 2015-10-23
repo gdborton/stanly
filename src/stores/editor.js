@@ -3,6 +3,7 @@ import _assign from 'object-assign';
 import eventConstants from '../constants/events';
 import appDispatcher from '../dispatcher/app-dispatcher';
 import fs from 'fs';
+import reduxStore from './redux';
 
 function exportDefaults() {
   return {
@@ -352,14 +353,6 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
       state.selections.selectedFrame = editorStore.getFramesForSelectedAnimation()[0];
       change();
       break;
-    case eventConstants.SET_CANVAS_WIDTH:
-      exportValues.width = action.data;
-      change();
-      break;
-    case eventConstants.SET_CANVAS_HEIGHT:
-      exportValues.height = action.data;
-      change();
-      break;
     case eventConstants.RESET:
       exportValues = exportDefaults();
       state = stateDefaults();
@@ -374,6 +367,10 @@ editorStore.dispatchToken = appDispatcher.register(payload => {
     default:
       return true;
   }
+});
+
+reduxStore.subscribe(() => {
+  exportValues = {...exportValues, ...reduxStore.getState()};
 });
 
 export default editorStore;

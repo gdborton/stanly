@@ -1,19 +1,28 @@
 import appDispatcher from '../dispatcher/app-dispatcher';
 import events from'../constants/events';
+import {dispatch} from '../stores/redux';
+
+function setHeight(height) {
+  return {
+    type: events.SET_CANVAS_HEIGHT,
+    height
+  }
+};
+
+function setWidth(width) {
+  return {
+    type: events.SET_CANVAS_WIDTH,
+    width
+  }
+};
 
 var canvasActions = {
   setHeight(height) {
-    appDispatcher.handleAction({
-      actionType: events.SET_CANVAS_HEIGHT,
-      data: parseInt(height)
-    });
+    dispatch(setHeight(parseInt(height)));
   },
 
   setWidth(width) {
-    appDispatcher.handleAction({
-      actionType: events.SET_CANVAS_WIDTH,
-      data: parseInt(width)
-    });
+    dispatch(setWidth(parseInt(width)));
   }
 };
 
