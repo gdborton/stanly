@@ -1,17 +1,24 @@
-import eventConstants from '../constants/events';
-
-const initialState = {
-  selections: {
-    selectedFile: null,
-    selectedAnimation: null,
-    selectedFrame: null
-  },
-  exportValues: {
-    height: 300,
-    width: 300,
-    files: [],
-    animations: {}
+var defaultState = {
+  fileOrder: [],
+  selectedFile: null,
+  selectedAnimation: null,
+  selectedFrame: null,
+  canvasHeight: 300,
+  canvasWidth: 300,
+  entities: {
+    files: {},
+    animations: {},
+    frames: {}
   }
+};
+
+const defaultAnimation = {
+  frames: []
+};
+
+const defaultFrame = {
+  duration: 500,
+  fileFrames: []
 };
 
 const defaultFileFrame = {
@@ -21,150 +28,320 @@ const defaultFileFrame = {
   visible: true
 };
 
-const defaultAnimation = {
-  duration: 500,
-  files: {}
-};
-
-function exportValues (state, action) {
-  switch (action.type) {
-    case eventConstants.SET_CANVAS_HEIGHT:
-      return {...state, ...{ height: action.height }};
-    case eventConstants.SET_CANVAS_WIDTH:
-      return {...state, ...{ width: action.width }};
-    case eventConstants.ADD_FILE:
-      return {...state, ...addFile(state, action)};
-    case eventConstants.ADD_ANIMATION:
-      return {...state, ...addAnimation(state, action)};
+export function file(state, action) {
+  switch(action.type) {
+    case 'RENAME_FILE':
+      return {...state, ...{name: action.name}};
     default:
       return state;
   }
 }
 
-function addAnimation(state, action) {
-  var newState = JSON.parse(JSON.stringify(state));
-  var animation = action.animationName ? action.animationName : 'Untitled ' + Object.keys(state.animations).length;
-  newState.animations[animation] = [];
-  return newState;
-}
-
-function addFile(state, action) {
-  const files = [...state.files, action.fileName];
-  let animations = JSON.parse(JSON.stringify(state.animations));
-
-  Object.keys(animations).forEach(animation => {
-    let frames = animations[animation]
-    if (!frames.length) {
-      animations[animation].push({...defaultAnimation})
-    };
-
-    frames.map(frame => {
-      let newFrame = {...frame};
-      newFrame.files[files.length - 1] = {...defaultFileFrame};
-      return newFrame;
-    });
-  });
-
-  return {files, animations};
-};
-
-function renameFile(state, action) {
-  let selections = {...state.selections};
-  let files = [...state.exportValues.files];
-  try {
-    fs.renameSync('./'+ action.oldName, './' + action.newName);
-    if (action.oldName === selections.selectedFile) {
-      selections.selectedFile = action.newName;
-    }
-    let index = files.indexOf(action.oldName);
-    files[index] = action.newName;
-  } catch (exception) {}
-  let newState = {...state, ...{selections}};
-  newState.exportValues.files = [...files];
-
-  return newState;
-};
-
-function selections(state, action) {
+export function files(state = defaultState.entities.files, action) {
   switch(action.type) {
-    case eventConstants.SELECT_FILE_BY_NAME:
-      return {...state, ...{selectedFile: action.fileName}};
+    case 'ADD_FILE':
+      return {...state, ...{[action.id]: {id: action.id, name: action.fileName}}};
+    case 'RENAME_FILE':
+      return {...state, ...{[action.file]: file(state[action.file], action)}};
     default:
       return state;
   }
 };
 
-// will be given an animation hash. Each field on the animation hash is an array of frames.
-function swapFrameFileLocations(state, oldIndex, newIndex) {
-  let newState = JSON.parse(JSON.stringify(state));
-  Object.keys(newState).forEach((animation) => {
-    newState[animation].forEach((frame) => {
-      var firstValue = frame.files[oldIndex];
-      frame.files[oldIndex] = frame.files[newIndex];
-      frame.files[newIndex] = firstValue;
-    });
-  });
-  return newState;
-};
-
-function moveSelectedFileUp(state, action) {
-  let newState = JSON.parse(JSON.stringify(state));
-  let files = newState.exportValues.files;
-  let fileIndex = files.indexOf(state.selections.selectedFile);
-  if (fileIndex !== 0) {
-    files[fileIndex] = files[fileIndex + 1];
-    files[fileIndex + 1] = newState.selections.selectedFile;
-    newState.exportValues.animations = swapFrameFileLocations(newState.exportValues.animations, fileIndex, fileIndex + 1);
-    return newState;
-  }
-  return {...state};
-};
-
-function moveSelectedFileDown(state, action) {
-  let newState = JSON.parse(JSON.stringify(state));
-  let files = newState.exportValues.files;
-  let fileIndex = files.indexOf(state.selections.selectedFile);
-  if (fileIndex !== 0) {
-    files[fileIndex] = files[fileIndex + 1];
-    files[fileIndex + 1] = newState.selections.selectedFile;
-    newState.exportValues.animations = swapFrameFileLocations(newState.exportValues.animations, fileIndex, fileIndex + 1);
-    return newState;
-  }
-  return {...state};
-};
-
-function editorApp(state = initialState, action) {
-  let deepFreeze = require('deep-freeze');
-  deepFreeze(state);
+export function fileOrder(state, action) {
   switch(action.type) {
-    case eventConstants.RENAME_FILE:
-      return {...state, ...renameFile(state, action)};
-    case eventConstants.MOVE_SELECTED_FILE_UP:
-      return {...state, ...moveSelectedFileUp(state, action)};
-    case eventConstants.MOVE_SELECTED_FILE_DOWN:
-      return {...state, ...moveSelectedFileDOWN(state, action)};
-    case eventConstants.SELECT_ANIMATION:
+    case 'MOVE_FILE_UP':
+      var originalIndex = state.indexOf(action.file);
+      if (originalIndex > 0) {
+        let newState = [...state];
+        newState[originalIndex] = newState[originalIndex - 1];
+        newState[originalIndex - 1] = action.file;
+        return newState;
+      }
+    case 'MOVE_FILE_DOWN':
+      var originalIndex = state.indexOf(action.file);
+      if (originalIndex < state.length - 1) {
+        let newState = [...state];
+        newState[originalIndex] = newState[originalIndex + 1];
+        newState[originalIndex + 1] = action.file;
+        return newState;
+      }
+    case 'ADD_FILE':
+      return [...state, action.id];
+    default:
+      return state;
+  }
+};
+
+export function animation(state, action) {
+  switch(action.type) {
+    case 'ADD_FRAME_TO_ANIMATION':
+      return {...state, ...{frames: [...state.frames, action.frame]}};
+    case 'RENAME_ANIMATION':
+      return {...state, ...{name: action.newName}};
+    default:
+      return state;
+  }
+};
+
+function generateFileFrames(stateTree) {
+  return Object.keys(stateTree.entities.files).map(id => {
+    return {...defaultFileFrame, ...{file: parseInt(id)}};
+  });
+};
+
+function frame(state, action, stateTree) {
+  switch(action.type) {
+    case 'SET_DURATION_FOR_FRAME':
+      return {...state, ...{duration: action.duration}};
+    case 'INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{left: fileFrame.left + 1}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'INCREMENT_TOP_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{top: fileFrame.top + 1}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{left: fileFrame.left - 1}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'DECREMENT_TOP_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{top: fileFrame.top - 1}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'SET_LEFT_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{left: action.left}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'SET_TOP_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{top: action.top}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'ROTATE_LEFT_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{rotation: fileFrame.rotation - 1}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'ROTATE_RIGHT_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{rotation: fileFrame.rotation + 1}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'SET_ROTATION_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{rotation: action.rotation}};
+          }
+          return fileFrame;
+        })
+      };
+    case 'SET_VISIBILITY_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        fileFrames: state.fileFrames.map(fileFrame => {
+          if (fileFrame.file === stateTree.selectedFile) {
+            return {...fileFrame, ...{visible: action.visible}};
+          }
+          return fileFrame;
+        })
+      };
+    default:
+      return state;
+  }
+}
+
+export function frames(state, action, stateTree) {
+  switch(action.type) {
+    case 'ADD_FRAME_TO_ANIMATION':
       return {
         ...state,
         ...{
-          selections: {
-            selectedAnimation: action.animationName,
-            selectedFrame: state.exportValues.animations[action.animationName][0]
+          [action.frame]: {
+            frame: action.frame,
+            fileFrames: generateFileFrames(stateTree),
+            duration: 500
           }
         }
       };
-    case eventConstants.SELECT_FILE_BY_NAME:
-      return {...state, ...{selections: selections(state.selections, action)}};
-    case eventConstants.SET_CANVAS_HEIGHT:
-    case eventConstants.SET_CANVAS_WIDTH:
-    case eventConstants.ADD_FILE:
-    case eventConstants.ADD_ANIMATION:
-      return {...state, ...{exportValues: exportValues(state.exportValues, action)}};
-    case eventConstants.RESET:
-      return {...initialState};
+    case 'INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME':
+    case 'INCREMENT_TOP_FOR_SELECTED_FILE_FRAME':
+    case 'DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME':
+    case 'DECREMENT_TOP_FOR_SELECTED_FILE_FRAME':
+    case 'ROTATE_LEFT_FOR_SELECTED_FILE_FRAME':
+    case 'ROTATE_RIGHT_FOR_SELECTED_FILE_FRAME':
+    case 'SET_ROTATION_FOR_SELECTED_FILE_FRAME':
+    case 'SET_LEFT_FOR_SELECTED_FILE_FRAME':
+    case 'SET_TOP_FOR_SELECTED_FILE_FRAME':
+    case 'SET_VISIBILITY_FOR_SELECTED_FILE_FRAME':
+      return {
+        ...state,
+        ...{
+          [stateTree.selectedFrame]: frame(state[stateTree.selectedFrame], action, stateTree)
+        }
+      };
+    case 'DELETE_FRAME':
+      let newState = {...state};
+      delete newState[action.frame];
+      return newState;
+    case 'SET_DURATION_FOR_FRAME':
+      return {
+        ...state,
+        ...{
+          [stateTree.selectedFrame]: frame(state[action.frame], action, stateTree)
+        }
+      }
+    default:
+      return state;
+  }
+}
+
+export function animations(state = defaultState.entities.animations, action, stateTree) {
+  switch(action.type) {
+    case 'ADD_ANIMATION':
+      return {...state, ...{[action.id]: {id: action.id, name: action.animationName, frames: []}}};
+    case 'DELETE_FRAME':
+      let foundAnimation = Object.keys(state).map(key => {return state[key]}).filter(animation => { return animation.frames.indexOf(action.frame) !== -1 })[0];
+      return {
+        ...state,
+        ...{[foundAnimation.id]: {...foundAnimation, frames: foundAnimation.frames.filter(frameId => { return frameId !== action.frame})}}
+      };
+    case 'ADD_FRAME_TO_ANIMATION':
+    case 'RENAME_ANIMATION':
+      return {
+        ...state,
+        ...{[action.animation]: animation(state[action.animation], action)}
+      };
     default:
       return state;
   }
 };
 
-export default editorApp;
+export function entities(state = defaultState.entities, action, stateTree) {
+  return {
+    files: files(state.files, action, stateTree),
+    animations: animations(state.animations, action, stateTree),
+    frames: frames(state.frames, action, stateTree)
+  };
+};
+
+export function selectedAnimation(state = null, action) {
+  switch(action.type) {
+    case 'ADD_ANIMATION':
+      return action.id;
+    case 'SELECT_ANIMATION':
+      return action.animation;
+    default:
+      return state;
+  }
+};
+
+export function selectedFile(state = null, action) {
+  switch(action.type) {
+    case 'ADD_FILE':
+      return action.id;
+    case 'SELECT_FILE':
+      return action.file;
+    default:
+      return state;
+  }
+};
+
+export function selectedFrame(state = null, action, stateTree) {
+  switch(action.type) {
+    case 'ADD_FRAME_TO_ANIMATION':
+      return action.frame;
+    case 'SELECT_FRAME':
+      return action.frame;
+    case 'DELETE_FRAME':
+      if (stateTree.selectedAnimation !== null) {
+        let frames = stateTree.entities.animations[stateTree.selectedAnimation].frames;
+        let frameIndex = frames.indexOf(action.frame);
+        if (frameIndex === 0) {
+          return frames[1];
+        } else {
+          return frames[frameIndex - 1];
+        }
+      }
+    default:
+      return state;
+  }
+};
+
+export function canvasWidth(state, action) {
+  switch(action.type) {
+    case 'SET_CANVAS_WIDTH':
+      return action.width;
+    default:
+      return state;
+  }
+};
+
+export function canvasHeight(state, action) {
+  switch(action.type) {
+    case 'SET_CANVAS_HEIGHT':
+      return action.height;
+    default:
+      return state;
+  }
+}
+
+export function app(state = defaultState, action = {}) {
+  return {
+    canvasHeight: canvasHeight(state.canvasHeight, action),
+    canvasWidth: canvasWidth(state.canvasWidth, action),
+    selectedFile: selectedFile(state.selectedFile, action, state),
+    selectedAnimation: selectedAnimation(state.selectedAnimation, action, state),
+    selectedFrame: selectedFrame(state.selectedFrame, action, state),
+    fileOrder: fileOrder(state.fileOrder, action, state),
+    entities: entities(state.entities, action, state)
+  };
+};

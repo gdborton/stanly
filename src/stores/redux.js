@@ -1,8 +1,6 @@
 import {createStore, applyMiddleware} from 'redux';
-import editorApp from '../reducers/reducers';
-import reduxImmutable from 'redux-immutable-state-invariant';
+import {app} from '../reducers/reducers';
 
-const createStoreWithMiddleware = applyMiddleware(reduxImmutable())(createStore);
-const store = createStoreWithMiddleware(editorApp);
+const store = createStore(app);
 
 export default store;
