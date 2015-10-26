@@ -50,7 +50,7 @@ describe('App', function() {
         frames: { 0: {id: 0, duration: 500, fileFrames: [{file: 0, top: 0, left: 0, visible: true, rotation: 0}]}}
       }
     };
-    let importedState = app(stateToBeImported, actionCreators.importState());
+    let importedState = app(undefined, actionCreators.importState(stateToBeImported));
 
     it('should have filled in some of the missing values.', function() {
       expect(importedState.selectedFile).to.equal(0);

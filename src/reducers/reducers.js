@@ -70,9 +70,10 @@ export function fileOrder(state, action) {
         newState[originalIndex + 1] = action.file;
         return newState;
       }
+
       return state;
     case 'ADD_FILE':
-      return [].concat[state, action.id];
+      return [].concat(state, action.id);
     case 'IMPORT_STATE':
       return action.state.fileOrder;
     default:
@@ -81,9 +82,9 @@ export function fileOrder(state, action) {
 };
 
 export function animation(state, action) {
-  switch(action.type) {
+  switch (action.type) {
     case 'ADD_FRAME_TO_ANIMATION':
-      return {...state, ...{frames: [...state.frames, action.frame]}};
+      return {...state, ...{frames: [].concat(state.frames, action.frame)}};
     case 'RENAME_ANIMATION':
       return {...state, ...{name: action.newName}};
     default:
