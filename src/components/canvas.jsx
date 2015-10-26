@@ -1,57 +1,16 @@
 import React from 'react';
-import canvasActions from '../actions/canvas';
 import editorStore from '../stores/editor';
 import _assign from 'object-assign';
 
 var Canvas = React.createClass({
-  getInitialState() {
-    return {
-      selectedFrame: editorStore.getSelectedFrame(),
-      files: editorStore.getFiles(),
-      canvasHeight: editorStore.getHeight(),
-      canvasWidth: editorStore.getWidth()
-    }
-  },
-
-  _updateFrames() {
-    this.setState({
-      selectedFrame: editorStore.getSelectedFrame()
-    });
-  },
-
-  _updateFiles() {
-    this.setState({
-      files: editorStore.getFiles()
-    });
-  },
-
-  _updateCanvas() {
-    this.setState({
-      canvasHeight: editorStore.getHeight(),
-      canvasWidth: editorStore.getWidth()
-    });
-  },
-
-  componentDidMount() {
-    editorStore.addChangeListener(this._updateFrames);
-    editorStore.addChangeListener(this._updateCanvas);
-    editorStore.addChangeListener(this._updateFiles);
-  },
-
-  componentWillUnmount() {
-    editorStore.removeChangeListener(this._updateFrames);
-    editorStore.removeChangeListener(this._updateCanvas);
-    editorStore.removeChangeListener(this._updateFiles);
-  },
-
   render() {
     var style = {
       canvas: {
         position: 'relative',
         border: '1px solid black',
         overflow: 'hidden',
-        height: this.state.canvasHeight,
-        width: this.state.canvasWidth,
+        height: this.props.height,
+        width: this.props.width,
         background: 'URL(assets/img/transparent-bg.png)',
         margin: '200px auto'
       },
@@ -65,9 +24,8 @@ var Canvas = React.createClass({
       }
     };
     var images = [];
-    if (this.state.selectedFrame) {
-      images = this.state.files.map((file, index) => {
-        var fileFrame = this.state.selectedFrame.files[index];
+    if (this.props.frame) {
+      images = this.props.frame.fileFrames.map((fileFrame, index) => {
         if (fileFrame && fileFrame.visible) {
           var imageStyle = _assign({}, style.image, {
             top: fileFrame.top,
@@ -75,7 +33,7 @@ var Canvas = React.createClass({
             transform: 'rotate(' + fileFrame.rotation + 'deg)'
           });
 
-          return <img style={imageStyle} key={file} src={process.cwd() + '/' + file}/>
+          return <img style={imageStyle} key={fileFrame.file} src={process.cwd() + '/' + fileFrame.file}/>
         } else {
           return null;
         }

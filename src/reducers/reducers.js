@@ -58,6 +58,7 @@ export function fileOrder(state, action) {
         newState[originalIndex - 1] = action.file;
         return newState;
       }
+      return state;
     case 'MOVE_FILE_DOWN':
       var originalIndex = state.indexOf(action.file);
       if (originalIndex < state.length - 1) {
@@ -66,6 +67,7 @@ export function fileOrder(state, action) {
         newState[originalIndex + 1] = action.file;
         return newState;
       }
+      return state;
     case 'ADD_FILE':
       return [...state, action.id];
     default:
@@ -206,7 +208,7 @@ export function frames(state, action, stateTree) {
         ...state,
         ...{
           [action.frame]: {
-            frame: action.frame,
+            id: action.frame,
             fileFrames: generateFileFrames(stateTree),
             duration: 500
           }

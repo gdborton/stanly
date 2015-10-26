@@ -2,7 +2,6 @@ import React from 'react';
 import editorStore from '../stores/editor';
 import globalStyles from '../global-styles';
 import frameActions from '../actions/frames';
-
 var styles = {
   container: {
     backgroundColor: globalStyles.colors.outsidePanelBackground,
@@ -13,17 +12,13 @@ var styles = {
 var Frames = React.createClass({
   getInitialState() {
     return {
-      frames: editorStore.getFramesForSelectedAnimation(),
-      isPlaying: editorStore.getIsPlaying(),
-      selectedFrame: editorStore.getSelectedFrame()
+      isPlaying: editorStore.getIsPlaying()
     };
   },
 
   _updateFrames() {
     this.setState({
-      frames: editorStore.getFramesForSelectedAnimation(),
-      isPlaying: editorStore.getIsPlaying(),
-      selectedFrame: editorStore.getSelectedFrame()
+      isPlaying: editorStore.getIsPlaying()
     });
   },
 
@@ -36,11 +31,12 @@ var Frames = React.createClass({
   },
 
   render() {
-    var frames = this.state.frames.map((frame, index) => {
+    console.log(this.props);
+    var frames = this.props.frames.map((frame, index) => {
       var style = {
         width: 10,
         height: 10,
-        backgroundColor: frame === this.state.selectedFrame ? globalStyles.colors.selectedColor : 'white',
+        backgroundColor: frame.id === this.props.selectedFrameId ? globalStyles.colors.selectedColor : 'white',
         border: '1px solid #ccc',
         display: 'inline-block'
       };
@@ -48,7 +44,7 @@ var Frames = React.createClass({
     });
 
     var frameDuration = 0;
-    this.state.frames.forEach(frame => {
+    this.props.frames.forEach(frame => {
       frameDuration += parseInt(frame.duration);
     });
 
@@ -56,7 +52,7 @@ var Frames = React.createClass({
 
     return (
       <div style={styles.container}>
-        Frames: {this.state.frames.length} Animation Duration: {frameDuration}s{' '}
+        Frames: {this.props.frames.length} Animation Duration: {frameDuration}s{' '}
         <a onClick={this.handleNewFrameClick} >+</a>{' '}
         <a onClick={this.handleDeleteFrameClick} >-</a>{' '}
         <a onClick={this.handleTogglePlayClick}>{this.state.isPlaying ? 'PAUSE' : 'PLAY'}</a>
@@ -68,15 +64,15 @@ var Frames = React.createClass({
   },
 
   handleFrameClick(frame) {
-    frameActions.selectFrame(frame);
+    this.props.onSelectFrame(frame);
   },
 
   handleNewFrameClick() {
-    frameActions.addFrame();
+    this.props.onAddFrame();
   },
 
   handleDeleteFrameClick() {
-    frameActions.deleteFrame(this.state.selectedFrame);
+    this.props.onDeleteFrame(this.props.selectedFrameId);
   },
 
   handleTogglePlayClick() {

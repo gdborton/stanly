@@ -22,8 +22,8 @@ var LeftPanel = React.createClass({
   render() {
     return (
       <div style={styles.container}>
-        <Files style={styles.children} />
-        <Animations style={styles.children} />
+        <Files style={styles.children} files={this.props.files} onRenameFile={this.props.onRenameFile} onSelectFile={this.props.onSelectFile} selectedFileId={this.props.selectedFileId} />
+        <Animations style={styles.children} animations={this.props.animations} onSelectAnimation={this.props.onSelectAnimation} onRenameAnimation={this.props.onRenameAnimation} selectedAnimationId={this.props.selectedAnimation} onAddAnimation={this.props.onAddAnimation} />
       </div>
     );
   }

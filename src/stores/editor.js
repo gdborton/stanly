@@ -47,16 +47,16 @@ var setupTimer = function() {
   var frames = reduxState.entities.animations[reduxState.selectedAnimation].frames;
 
   state.frameTimer = setTimeout(() => {
-    var selectedFrameIndex = frames.indexOf(redux.selectedFrame);
+    var selectedFrameIndex = frames.indexOf(reduxState.selectedFrame);
 
     if (selectedFrameIndex === frames.length - 1) {
-      reduxState.dispatch(actionCreators.selectFrame(frames[0].id));
+      reduxStore.dispatch(actionCreators.selectFrame(frames[0]));
     } else {
-      reduxState.dispatch(actionCreators.selectFrame(frames[selectedFrameIndex + 1].id));
+      reduxStore.dispatch(actionCreators.selectFrame(frames[selectedFrameIndex + 1]));
     }
 
     setupTimer();
-  }, reduxState.entities.frames[redux.selectedFrame].duration);
+  }, reduxState.entities.frames[reduxState.selectedFrame].duration);
 };
 
 editorStore.dispatchToken = appDispatcher.register(payload => {
