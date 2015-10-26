@@ -1,4 +1,7 @@
+import pkg from '../../package.json';
+
 var defaultState = {
+  version: pkg.version,
   fileOrder: [],
   selectedFile: null,
   selectedAnimation: null,
@@ -363,6 +366,7 @@ export function canvasHeight(state, action) {
 
 export function app(state = defaultState, action = {}) {
   return {
+    version: pkg.version,
     canvasHeight: canvasHeight(state.canvasHeight, action),
     canvasWidth: canvasWidth(state.canvasWidth, action),
     selectedFile: selectedFile(state.selectedFile, action, state),
