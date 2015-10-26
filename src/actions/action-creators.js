@@ -20,6 +20,8 @@ const actionCreators = {
   deleteFrame: (frame) => ({type: 'DELETE_FRAME', frame}),
   selectFrame: (frame) => ({type: 'SELECT_FRAME', frame}),
   setDurationForFrame: (frame, duration) => ({ type: 'SET_DURATION_FOR_FRAME', frame, duration }),
+  addEventToFrame: (event, frame) => ({type: 'ADD_EVENT_TO_FRAME', event, frame}),
+  deleteEventFromFrame: (event, frame) => ({type: 'DELETE_EVENT_FROM_FRAME', event, frame}),
 
   // fileFrames
   decrementLeftForSelectedFileFrame: () => ({type: 'DECREMENT_LEFT_FOR_SELECTED_FILE_FRAME'}),

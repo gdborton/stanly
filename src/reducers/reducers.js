@@ -100,6 +100,15 @@ function generateFileFrames(stateTree) {
 
 function frame(state, action, stateTree) {
   switch(action.type) {
+    case 'ADD_EVENT_TO_FRAME':
+      return {...state, ...{events: [].concat(state.events, action.event)}};
+    case 'DELETE_EVENT_FROM_FRAME':
+      return {
+        ...state,
+        ...{
+          events: state.events.filter((event) => (event !== action.event))
+        }
+      }
     case 'SET_DURATION_FOR_FRAME':
       return {...state, ...{duration: action.duration}};
     case 'INCREMENT_LEFT_FOR_SELECTED_FILE_FRAME':
@@ -216,7 +225,8 @@ export function frames(state, action, stateTree) {
           [action.frame]: {
             id: action.frame,
             fileFrames: generateFileFrames(stateTree),
-            duration: 500
+            duration: 500,
+            events: []
           }
         }
       };
@@ -240,13 +250,15 @@ export function frames(state, action, stateTree) {
       let newState = {...state};
       delete newState[action.frame];
       return newState;
+    case 'ADD_EVENT_TO_FRAME':
+    case 'DELETE_EVENT_FROM_FRAME':
     case 'SET_DURATION_FOR_FRAME':
       return {
         ...state,
         ...{
-          [stateTree.selectedFrame]: frame(state[action.frame], action, stateTree)
+          [action.frame]: frame(state[action.frame], action, stateTree)
         }
-      }
+      };
     default:
       return state;
   }

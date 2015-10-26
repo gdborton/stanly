@@ -40,7 +40,7 @@ describe('App', function() {
     });
   });
 
-  describe('importint state.', function() {
+  describe('importing state.', function() {
     let stateToBeImported = {
       canvasHeight: 400,
       canvasWidth: 400,
@@ -184,6 +184,19 @@ describe('App', function() {
         let frameAddedState = app(state, frameAddAction);
         frameAddedState = app(frameAddedState, actionCreators.setDurationForFrame(0, 600));
         expect(frameAddedState.entities.frames['0'].duration).to.equal(600);
+      });
+
+      it('should correctly add an event to the frame.', function() {
+        let frameAddedState = app(state, frameAddAction);
+        frameAddedState = app(frameAddedState, actionCreators.addEventToFrame('hit', 0));
+        expect(frameAddedState.entities.frames['0'].events).to.deep.equal(['hit']);
+      });
+
+      it('should correctly delete an event from the frame.', function() {
+        let frameAddedState = app(state, frameAddAction);
+        frameAddedState = app(frameAddedState, actionCreators.addEventToFrame('hit', 0));
+        frameAddedState = app(frameAddedState, actionCreators.deleteEventFromFrame('hit', 0));
+        expect(frameAddedState.entities.frames['0'].events).to.deep.equal([]);
       });
 
       describe('adding a frame when files already exist.', function() {
