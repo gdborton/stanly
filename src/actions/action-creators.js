@@ -37,5 +37,4 @@ const actionCreators = {
   importState: (state) => ({type: 'IMPORT_STATE', state})
 };
 
-
 export default actionCreators;

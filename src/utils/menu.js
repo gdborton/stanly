@@ -1,17 +1,21 @@
-var remote = require('remote');
-var Menu = remote.require('menu');
-var MenuItem = remote.require('menu-item');
-//var exportHandler = require('./export-handler');
-var app = remote.require('app');
+const remote = require('remote');
+const Menu = remote.require('menu');
+const MenuItem = remote.require('menu-item');
+
+const app = remote.require('app');
+const reduxStore = require('../stores/redux');
+const thunks = require('../actions/thunks');
 
 var template = [{
   label: 'File',
   submenu: [
-    // {
-    //   label: 'Save',
-    //   accelerator: 'CmdOrCtrl+S',
-    //   click: exportHandler.attemptExport
-    // },
+    {
+      label: 'Save',
+      accelerator: 'CmdOrCtrl+S',
+      click: () => {
+        reduxStore.dispatch(thunks.saveState());
+      }
+    },
     {
       label: 'Exit',
       click: app.quit

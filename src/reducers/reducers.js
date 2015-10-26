@@ -69,7 +69,9 @@ export function fileOrder(state, action) {
       }
       return state;
     case 'ADD_FILE':
-      return [...state, action.id];
+      return [].concat[state, action.id];
+    case 'IMPORT_STATE':
+      return action.state.fileOrder;
     default:
       return state;
   }
@@ -268,6 +270,9 @@ export function animations(state = defaultState.entities.animations, action, sta
 };
 
 export function entities(state = defaultState.entities, action, stateTree) {
+  if (action.type === 'IMPORT_STATE') {
+    return {...action.state.entities};
+  }
   return {
     files: files(state.files, action, stateTree),
     animations: animations(state.animations, action, stateTree),
@@ -282,10 +287,11 @@ export function selectedAnimation(state = null, action, stateTree) {
     case 'SELECT_ANIMATION':
       return action.animation;
     case 'IMPORT_STATE':
-      let animations = Object.keys(stateTree.entities.animations);
+      let animations = Object.keys(action.state.entities.animations);
       if (animations.length) {
-        return stateTree.entities.animations[animations[0]].id;
+        return action.state.entities.animations[animations[0]].id;
       }
+      return state;
     default:
       return state;
   }
@@ -298,9 +304,9 @@ export function selectedFile(state = null, action, stateTree) {
     case 'SELECT_FILE':
       return action.file;
     case 'IMPORT_STATE':
-      let files = Object.keys(stateTree.entities.files);
+      let files = Object.keys(action.state.entities.files);
       if (files.length) {
-        return stateTree.entities.files[files[0]].id;
+        return action.state.entities.files[files[0]].id;
       }
     default:
       return state;
@@ -324,10 +330,9 @@ export function selectedFrame(state = null, action, stateTree) {
         }
       }
     case 'IMPORT_STATE':
-      let animations = Object.keys(stateTree.entities.animations);
-      console.log(animations);
-      if (animations.length && stateTree.entities.animations[animations[0]].frames.length) {
-        return stateTree.entities.animations[animations[0]].frames[0];
+      let animations = Object.keys(action.state.entities.animations);
+      if (animations.length && action.state.entities.animations[animations[0]].frames.length) {
+        return action.state.entities.animations[animations[0]].frames[0];
       }
     default:
       return state;
@@ -338,6 +343,8 @@ export function canvasWidth(state, action) {
   switch(action.type) {
     case 'SET_CANVAS_WIDTH':
       return action.width;
+    case 'IMPORT_STATE':
+      return action.state.canvasWidth;
     default:
       return state;
   }
@@ -347,6 +354,8 @@ export function canvasHeight(state, action) {
   switch(action.type) {
     case 'SET_CANVAS_HEIGHT':
       return action.height;
+    case 'IMPORT_STATE':
+      return action.state.canvasHeight;
     default:
       return state;
   }

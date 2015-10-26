@@ -31,7 +31,6 @@ var Frames = React.createClass({
   },
 
   render() {
-    console.log(this.props);
     var frames = this.props.frames.map((frame, index) => {
       var style = {
         width: 10,
