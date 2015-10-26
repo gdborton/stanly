@@ -273,23 +273,33 @@ export function entities(state = defaultState.entities, action, stateTree) {
   };
 };
 
-export function selectedAnimation(state = null, action) {
+export function selectedAnimation(state = null, action, stateTree) {
   switch(action.type) {
     case 'ADD_ANIMATION':
       return action.id;
     case 'SELECT_ANIMATION':
       return action.animation;
+    case 'IMPORT_STATE':
+      let animations = Object.keys(stateTree.entities.animations);
+      if (animations.length) {
+        return stateTree.entities.animations[animations[0]].id;
+      }
     default:
       return state;
   }
 };
 
-export function selectedFile(state = null, action) {
+export function selectedFile(state = null, action, stateTree) {
   switch(action.type) {
     case 'ADD_FILE':
       return action.id;
     case 'SELECT_FILE':
       return action.file;
+    case 'IMPORT_STATE':
+      let files = Object.keys(stateTree.entities.files);
+      if (files.length) {
+        return stateTree.entities.files[files[0]].id;
+      }
     default:
       return state;
   }
@@ -310,6 +320,12 @@ export function selectedFrame(state = null, action, stateTree) {
         } else {
           return frames[frameIndex - 1];
         }
+      }
+    case 'IMPORT_STATE':
+      let animations = Object.keys(stateTree.entities.animations);
+      console.log(animations);
+      if (animations.length && stateTree.entities.animations[animations[0]].frames.length) {
+        return stateTree.entities.animations[animations[0]].frames[0];
       }
     default:
       return state;

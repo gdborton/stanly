@@ -31,7 +31,10 @@ const actionCreators = {
   setVisibilityForSelectedFileFrame: (visible) => ({type: 'SET_VISIBILITY_FOR_SELECTED_FILE_FRAME', visible}),
   rotateSelectedFileFrameLeft: () => ({type: 'ROTATE_LEFT_FOR_SELECTED_FILE_FRAME'}),
   rotateSelectedFileFrameRight: () => ({type: 'ROTATE_RIGHT_FOR_SELECTED_FILE_FRAME'}),
-  setRotationForSelectedFileFrame: (rotation) => ({type: 'SET_ROTATION_FOR_SELECTED_FILE_FRAME', rotation})
+  setRotationForSelectedFileFrame: (rotation) => ({type: 'SET_ROTATION_FOR_SELECTED_FILE_FRAME', rotation}),
+
+  // other
+  importState: (state) => ({type: 'IMPORT_STATE', state})
 };
 
 

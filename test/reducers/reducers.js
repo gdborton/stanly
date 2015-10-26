@@ -40,7 +40,31 @@ describe('App', function() {
     });
   });
 
-  describe('adjusting the canvas values', function() {
+  describe('importint state.', function() {
+    let stateToBeImported = {
+      canvasHeight: 400,
+      canvasWidth: 400,
+      entities: {
+        animations: { 0: {id: 0, frames: [0], name: 'base'}},
+        files: { 0: {id: 0, name: 'test.png'}},
+        frames: { 0: {id: 0, duration: 500, fileFrames: [{file: 0, top: 0, left: 0, visible: true, rotation: 0}]}}
+      }
+    };
+    let importedState = app(stateToBeImported, actionCreators.importState());
+
+    it('should have filled in some of the missing values.', function() {
+      expect(importedState.selectedFile).to.equal(0);
+      expect(importedState.selectedFrame).to.equal(0);
+      expect(importedState.selectedAnimation).to.equal(0);
+      expect(importedState.canvasHeight).to.equal(400);
+      expect(importedState.canvasWidth).to.equal(400);
+      expect(importedState.entities.files).to.not.be.empty;
+      expect(importedState.entities.frames).to.not.be.empty;
+      expect(importedState.entities.animations).to.not.be.empty;
+    });
+  });
+
+  describe('adjusting the canvas values.', function() {
     let state = app();
     it('should update the width.', function() {
       let widthState = app(state, actionCreators.setCanvasWidth(500));
