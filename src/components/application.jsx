@@ -58,9 +58,10 @@ var Application = React.createClass({
   },
 
   handleAddAnimation() {
-    let newAnimationId = Math.max.call(null, this.props.animations.map((animation) => {
+    let newAnimationId = Math.max.apply(null, this.props.animations.map((animation) => {
       return animation.id;
     })) + 1;
+
     this.props.dispatch(actionCreators.addAnimation('Untitled ' + newAnimationId, newAnimationId));
   },
 
@@ -182,7 +183,7 @@ Application = connect(function(state) {
     return frame.fileFrames.filter((fileFrame) => {
       return fileFrame.fileId === state.selectedFile;
     })[0];
-  })[0];
+  })[0] || {};
   return returnValue;
 })(Application);
 
