@@ -14,7 +14,22 @@ var styles = {
 };
 
 var FrameEditorPanel = React.createClass({
+  getDefaultProps() {
+    return {
+      events: []
+    }
+  },
+
   render() {
+    let events = this.props.events.map((event, index) => {
+      return (
+        <div key={index}>
+          {event}
+          <button onClick={this.handleDeleteEvent.bind(this, event)}>Delete</button>
+        </div>
+      );
+    });
+
     return (
       <div style={styles.container}>
         <div>{this.props.fileName ? this.props.fileName + '\'s' : ''} settings</div>
@@ -26,6 +41,12 @@ var FrameEditorPanel = React.createClass({
           Frame Settings
           <div>
             Duration: <input value={this.props.duration} onChange={this._handleDurationChange} />
+            Events:
+            <div>
+              {events}
+            </div>
+            <input ref='newEvent' placeholder='Event'/>
+            <button onClick={this.handleAddEvent}>Add</button>
           </div>
         </div>
       </div>
@@ -50,6 +71,18 @@ var FrameEditorPanel = React.createClass({
 
   _handleDurationChange(event) {
     this.props.onChangeDuration(event.target.value);
+  },
+
+  handleAddEvent() {
+    let value =  this.refs.newEvent.value.trim();
+    if (value) {
+      this.props.onAddEvent(value);
+      this.refs.newEvent.value = '';
+    }
+  },
+
+  handleDeleteEvent(event) {
+    this.props.onDeleteEvent(event);
   }
 });
 

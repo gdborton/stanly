@@ -24,9 +24,10 @@ var Application = React.createClass({
     document.body.onkeydown = this._handleKeyUp;
   },
 
-
   render() {
-    let duration = this.props.frames.filter((frame)=> (frame.id === this.props.selectedFrame)).map((frame) => {return frame.duration;})[0];
+    let selectedFrame = this.props.frames.filter((frame)=> (frame.id === this.props.selectedFrame))[0];
+    let duration = selectedFrame.duration;
+    let events = selectedFrame.events;
     return (
       <div style={styles.application}>
         <LeftPanel
@@ -41,7 +42,8 @@ var Application = React.createClass({
           top={this.props.selectedFileFrame.top} left={this.props.selectedFileFrame.left} rotation={this.props.selectedFileFrame.rotation}
           onChangeTop={this.handleChangeTop} onChangeLeft={this.handleChangeLeft} onChangeRotation={this.handleChangeRotation}
           visible={this.props.selectedFileFrame.visible} duration={duration}
-          onChangeVisibility={this.handleChangeVisibility} onChangeDuration={this.handleChangeDuration} />
+          onChangeVisibility={this.handleChangeVisibility} onChangeDuration={this.handleChangeDuration}
+          events={events} onAddEvent={this.handleAddEvent} onDeleteEvent={this.handleDeleteEvent}/>
         <RenameModal />
       </div>
     );
@@ -108,6 +110,14 @@ var Application = React.createClass({
 
   handleDeleteFrame(frameId) {
     this.props.dispatch(actionCreators.deleteFrame(frameId));
+  },
+
+  handleAddEvent(event) {
+    this.props.dispatch(actionCreators.addEventToFrame(event, this.props.selectedFrame));
+  },
+
+  handleDeleteEvent(event) {
+    this.props.dispatch(actionCreators.deleteEventFromFrame(event, this.props.selectedFrame));
   },
 
   _handleKeyUp(event) {
