@@ -207,6 +207,16 @@ describe('App', function() {
         });
       });
 
+      describe('adding a new frame, when another frame is already selected.', function(){
+        it('should copy the values from the currently selected frame.', function() {
+          let fileFrameState = app(state, actionCreators.addFile('test.png', 0));
+          fileFrameState = app(fileFrameState, frameAddAction);
+          fileFrameState = app(fileFrameState, actionCreators.incrementTopForSelectedFileFrame());
+          fileFrameState = app(fileFrameState, actionCreators.addFrameToAnimation(0, 1));
+          expect(fileFrameState.entities.frames['1'].fileFrames[0].top).to.equal(1);
+        });
+      });
+
       describe('editing frame values.', function() {
         let fileFrameState;
         beforeEach(function() {

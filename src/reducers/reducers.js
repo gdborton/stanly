@@ -93,9 +93,13 @@ export function animation(state, action) {
 };
 
 function generateFileFrames(stateTree) {
-  return Object.keys(stateTree.entities.files).map(id => {
-    return {...defaultFileFrame, ...{file: parseInt(id)}};
-  });
+  if (stateTree.selectedFrame !== null && stateTree.selectedFrame !== undefined) {
+    return [].concat(stateTree.entities.frames[stateTree.selectedFrame].fileFrames);
+  } else {
+    return Object.keys(stateTree.entities.files).map(id => {
+      return {...defaultFileFrame, ...{file: parseInt(id)}};
+    });
+  }
 };
 
 function frame(state, action, stateTree) {
