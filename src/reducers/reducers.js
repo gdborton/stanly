@@ -160,7 +160,7 @@ function frame(state, action, stateTree) {
         ...state,
         fileFrames: state.fileFrames.map(fileFrame => {
           if (fileFrame.file === stateTree.selectedFile) {
-            return {...fileFrame, ...{left: action.left}};
+            return {...fileFrame, ...{left: parseInt(action.left)}};
           }
           return fileFrame;
         })
@@ -170,7 +170,7 @@ function frame(state, action, stateTree) {
         ...state,
         fileFrames: state.fileFrames.map(fileFrame => {
           if (fileFrame.file === stateTree.selectedFile) {
-            return {...fileFrame, ...{top: action.top}};
+            return {...fileFrame, ...{top: parseInt(action.top)}};
           }
           return fileFrame;
         })
@@ -200,7 +200,7 @@ function frame(state, action, stateTree) {
         ...state,
         fileFrames: state.fileFrames.map(fileFrame => {
           if (fileFrame.file === stateTree.selectedFile) {
-            return {...fileFrame, ...{rotation: action.rotation}};
+            return {...fileFrame, ...{rotation: parseInt(action.rotation)}};
           }
           return fileFrame;
         })

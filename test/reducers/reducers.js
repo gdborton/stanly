@@ -245,6 +245,9 @@ describe('App', function() {
 
           fileFrameState = app(fileFrameState, actionCreators.setLeftForSelectedFileFrame(20));
           expect(fileFrameState.entities.frames['0'].fileFrames[0].left).to.equal(20);
+
+          fileFrameState = app(fileFrameState, actionCreators.setLeftForSelectedFileFrame('21'));
+          expect(fileFrameState.entities.frames['0'].fileFrames[0].left).to.equal(21);
         });
 
         it('should correctly update the top of the selected file frame.', function() {
@@ -256,6 +259,9 @@ describe('App', function() {
 
           fileFrameState = app(fileFrameState, actionCreators.setTopForSelectedFileFrame(20));
           expect(fileFrameState.entities.frames['0'].fileFrames[0].top).to.equal(20);
+
+          fileFrameState = app(fileFrameState, actionCreators.setTopForSelectedFileFrame('21'));
+          expect(fileFrameState.entities.frames['0'].fileFrames[0].top).to.equal(21);
         });
 
         it('should correctly update the visibility of the selected file frame.', function() {
@@ -270,6 +276,8 @@ describe('App', function() {
           expect(newFrame.entities.frames['0'].fileFrames[0].rotation).to.equal(1);
           newFrame = app(fileFrameState, actionCreators.setRotationForSelectedFileFrame(50));
           expect(newFrame.entities.frames['0'].fileFrames[0].rotation).to.equal(50);
+          newFrame = app(fileFrameState, actionCreators.setRotationForSelectedFileFrame('51'));
+          expect(newFrame.entities.frames['0'].fileFrames[0].rotation).to.equal(51);
         });
 
       });
