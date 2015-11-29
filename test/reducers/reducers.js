@@ -133,11 +133,23 @@ describe('App', function() {
       expect(state.entities.animations['0']).to.deep.equal({id: 0, name: 'Base', frames: []});
     });
 
+    it('should have selected the animation automatically', function() {
+      expect(state.selectedAnimation).to.equal(0);
+    });
+
     describe('selecting animations.', function() {
       let secondAnimationAddedState = app(state, actionCreators.addAnimation('Base2', 1));
       let selectedState = app(secondAnimationAddedState, actionCreators.selectAnimation(0));
       it('should have updated the selected animation', function() {
         expect(selectedState.selectedAnimation).to.equal(0);
+      });
+
+      it('should select the first frame of an animation when selected.', function() {
+        let newState = app(state, actionCreators.addFrameToAnimation(0, 1));
+        newState = app(newState, actionCreators.addAnimation('Base2', 1));
+        newState = app(newState, actionCreators.addFrameToAnimation(1, 2));
+        newState = app(newState, actionCreators.selectAnimation(0));
+        expect(newState.selectedFrame).to.equal(1);
       });
     });
 

@@ -354,6 +354,10 @@ export function selectedFrame(state = null, action, stateTree) {
       if (animations.length && action.state.entities.animations[animations[0]].frames.length) {
         return action.state.entities.animations[animations[0]].frames[0];
       }
+    case 'SELECT_ANIMATION':
+      if (stateTree.entities.animations[action.animation] && stateTree.entities.animations[action.animation].frames.length){
+        return stateTree.entities.animations[action.animation].frames[0];
+      }
     default:
       return state;
   }
