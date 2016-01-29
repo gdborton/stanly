@@ -1,6 +1,6 @@
-# Petulant Ninja
+# Stanly
 
-Petulant Ninja is a cross platform sprite editing desktop application.  Currently being designed to suit my needs for a mobile game that I'm developing.
+Stanly is a cross platform sprite editing desktop application.  Currently being designed to suit my needs for a mobile game that I'm developing.
 
 ![example](/lib/example.png)
 
