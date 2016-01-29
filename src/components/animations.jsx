@@ -1,45 +1,26 @@
 import React from'react';
-import editorStore from'../stores/editor';
-import animationActions from'../actions/animations';
 import _assign from'object-assign';
 import renameModalActions from '../actions/rename-modal';
 import ContextMenu from './context-menu';
 import contextMenuActions from '../actions/context-menu';
 
 var Animations = React.createClass({
-  getInitialState() {
+  getDefaultProps() {
     return {
-      animations: editorStore.getAnimations(),
-      selectedAnimation: editorStore.getSelectedAnimation(),
-      contextMenuOpen: false
-    };
+      animations: []
+    }
   },
-
-  _updateAnimations() {
-    this.setState({
-      animations: editorStore.getAnimations(),
-      selectedAnimation: editorStore.getSelectedAnimation(),
-    });
-  },
-
-  componentDidMount() {
-    editorStore.addChangeListener(this._updateAnimations);
-  },
-
-  componentWillUnmount() {
-    editorStore.removeChangeListener(this._updateAnimations);
-  },
-
   render() {
-    var animations = this.state.animations.map(animation => {
+
+    var animations = this.props.animations.map(animation => {
       var style = {
-        backgroundColor: animation === this.state.selectedAnimation ? '#29516d' : undefined
+        backgroundColor: animation.id === this.props.selectedAnimationId ? '#29516d' : undefined
       };
 
-      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} key={animation} onContextMenu={this._handleContextMenu.bind(this, animation)}>{animation}</div>;
+      return <div style={style} onClick={this._handleSelectAnimation.bind(this, animation)} key={animation.id} onContextMenu={this._handleContextMenu.bind(this, animation)}>{animation.name}</div>;
     });
 
-    var style = _assign({}, this.props.style);
+    var style = {...this.props.style};
     return (
       <div style={style}>
         <div>Animations <a onClick={this._handleAddAnimation}>+</a></div>
@@ -50,20 +31,21 @@ var Animations = React.createClass({
   },
 
   _handleAddAnimation() {
-    animationActions.addAnimation();
+    this.props.onAddAnimation();
   },
 
   _handleSelectAnimation(animation) {
-    animationActions.selectAnimation(animation);
+    this.props.onSelectAnimation(animation);
   },
 
   _handleContextMenu(animation, event) {
+    this.props.onSelectAnimation(animation);
     contextMenuActions.openContextMenu([
       {
         display: 'Rename',
         onClick: () => {
-          renameModalActions.open(this.state.selectedAnimation, (newValue) => {
-            animationActions.renameAnimation(this.state.selectedAnimation, newValue);
+          renameModalActions.open(animation.name, (newValue) => {
+            this.props.onRenameAnimation(animation, newValue);
           });
         }
       }, {

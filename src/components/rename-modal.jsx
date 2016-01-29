@@ -50,7 +50,7 @@ var RenameModal = React.createClass({
 
   componentDidUpdate() {
     if (this.refs.input) {
-      this.refs.input.getDOMNode().focus();
+      this.refs.input.focus();
     }
   },
 

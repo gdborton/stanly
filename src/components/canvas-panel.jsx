@@ -32,16 +32,22 @@ var styles = {
 
 var CanvasPanel = React.createClass({
   render() {
+    let selectedFrame = this.props.frames.filter((frame) => {
+      return frame.id === this.props.selectedFrameId;
+    })[0];
     return (
       <div style={styles.container}>
         <div style={styles.framesContainer}>
-          <Frames />
+          <Frames frames={this.props.frames} selectedFrameId={this.props.selectedFrameId}
+            onAddFrame={this.props.onAddFrame} onSelectFrame={this.props.onSelectFrame} onDeleteFrame={this.props.onDeleteFrame}/>
         </div>
         <div style={styles.canvasContainer}>
-          <Canvas />
+          <Canvas width={this.props.canvasWidth} height={this.props.canvasHeight} frame={selectedFrame}/>
         </div>
         <div style={styles.canvasSettingsContainer}>
-          <CanvasSettings />
+          <CanvasSettings
+            width={this.props.canvasWidth} onChangeWidth={this.props.onChangeCanvasWidth}
+            height={this.props.canvasHeight} onChangeHeight={this.props.onChangeCanvasHeight}/>
         </div>
       </div>
     );

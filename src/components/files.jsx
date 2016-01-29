@@ -1,45 +1,23 @@
 import React  from 'react';
-import editorStore  from '../stores/editor';
-import fileActions  from '../actions/files';
 import globalStyles  from '../global-styles';
-import _assign  from 'object-assign';
 import renameModalActions  from '../actions/rename-modal';
 import contextMenuActions from '../actions/context-menu';
 
 var Files = React.createClass({
-  getInitialState() {
-    return {
-      files: editorStore.getFiles(),
-      selectedFile: editorStore.getSelectedFile()
-    };
+  getDefaultProps(){
+    return {files: []}
   },
-
-  _updateFiles() {
-    this.setState({
-      files: editorStore.getFiles(),
-      selectedFile: editorStore.getSelectedFile()
-    });
-  },
-
-  componentDidMount() {
-    editorStore.addChangeListener(this._updateFiles);
-  },
-
-  componentWillUnmount() {
-    editorStore.removeChangeListener(this._updateFiles);
-  },
-
   render() {
-    var files = this.state.files.map(file => {
+    var files = this.props.files.map(file => {
       var style = {
         cursor: 'pointer',
-        backgroundColor: this.state.selectedFile === file ? globalStyles.colors.selectedColor : undefined
+        backgroundColor: this.props.selectedFileId === file.id ? globalStyles.colors.selectedColor : undefined
       };
 
-      return <div style={style} key={file} onClick={this._handleSelectFile.bind(this, file)} onContextMenu={this._handleContextMenu.bind(this, file)}>{file}</div>
+      return <div style={style} key={file.id} onClick={this._handleSelectFile.bind(this, file)} onContextMenu={this._handleContextMenu.bind(this, file)}>{file.name}</div>
     });
 
-    var style = _assign({}, this.props.style);
+    var style = {...this.props.style};
     return (
       <div style={style}>
         <div>Files</div>
@@ -49,15 +27,15 @@ var Files = React.createClass({
   },
 
   _handleSelectFile(file) {
-    fileActions.selectFileByName(file);
+    this.props.onSelectFile(file);
   },
 
   _handleContextMenu(file, event) {
-    fileActions.selectFileByName(file);
+    this.props.onSelectFile(file);
     contextMenuActions.openContextMenu([{
       display: 'Rename',
       onClick: () => {
-        renameModalActions.open(file, fileActions.renameFile.bind(this, this.state.selectedFile));
+        renameModalActions.open(file.name, (newName) => {this.props.onRenameFile(file, newName)});
       }
     }], event);
   }

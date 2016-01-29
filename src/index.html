@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Petulant Ninja</title>
+    <title>Stanly</title>
     <style type="text/css">
       body {
         padding: 0;
@@ -10,10 +10,14 @@
     </style>
   </head>
   <body>
+    <div id="render-target"></div>
   </body>
   <script>
     require('babel/register');
     require('./utils/menu');
     require('./components/application.jsx');
+    var folderName = process.cwd().split(/[/\\]/);
+    folderName = folderName[folderName.length - 1];
+    document.title = 'Stanly - ' + folderName;
   </script>
 </html>
